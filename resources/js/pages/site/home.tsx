@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { CaseStudyCard } from '@/components/site/case-study-card';
 import { ContentIcon } from '@/components/site/content-icon';
+import { ProductCard } from '@/components/site/product-card';
 import { SectionHeading } from '@/components/site/section-heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,15 +16,24 @@ import { Card, CardContent } from '@/components/ui/card';
 import { howWeWork } from '@/routes';
 import { index as caseStudiesIndex } from '@/routes/case-studies';
 import { create as consultationCreate } from '@/routes/consultation';
+import { index as productsIndex } from '@/routes/products';
 import { show as showIndustry } from '@/routes/industries';
-import { index as servicesIndex, show as showService } from '@/routes/services';
-import type { CaseStudy, Industry, ProcessStep, Service } from '@/types';
+import { index as expertisesIndex } from '@/routes/expertises';
+import { show as showService } from '@/routes/services';
+import type {
+    CaseStudy,
+    Industry,
+    ProcessStep,
+    Product,
+    Service,
+} from '@/types';
 
 type Props = {
     process: ProcessStep[];
     services: Service[];
     industries: Industry[];
     featuredCaseStudies: CaseStudy[];
+    products: Product[];
 };
 
 const differentiators = [
@@ -52,6 +62,7 @@ export default function Home({
     services,
     industries,
     featuredCaseStudies,
+    products,
 }: Props) {
     return (
         <>
@@ -180,12 +191,12 @@ export default function Home({
             {services.length > 0 && (
                 <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 md:px-6">
                     <SectionHeading
-                        eyebrow="Layanan"
+                        eyebrow="Keahlian"
                         title="Masalah yang sering kami bantu selesaikan"
                         action={
                             <Button variant="secondary" asChild>
-                                <Link href={servicesIndex()}>
-                                    Semua layanan
+                                <Link href={expertisesIndex()}>
+                                    Semua keahlian
                                     <ArrowRightIcon data-icon="inline-end" />
                                 </Link>
                             </Button>
@@ -206,7 +217,7 @@ export default function Home({
                                             />
                                         </span>
                                         <Badge variant="secondary">
-                                            {service.pillar.label}
+                                            {service.expertise?.name}
                                         </Badge>
                                         <h3 className="text-lg font-semibold group-hover:text-primary">
                                             {service.headline ?? service.name}
@@ -242,6 +253,29 @@ export default function Home({
                                 key={caseStudy.id}
                                 caseStudy={caseStudy}
                             />
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {products.length > 0 && (
+                <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 md:px-6">
+                    <SectionHeading
+                        eyebrow="Produk kami"
+                        title="Kami juga membangun dan menjalankan produk sendiri"
+                        description="Pengalaman mengelola platform kami sendiri, dari ide sampai dipakai ribuan pengguna, kami bawa ke setiap proyek klien."
+                        action={
+                            <Button variant="secondary" asChild>
+                                <Link href={productsIndex()}>
+                                    Semua produk
+                                    <ArrowRightIcon data-icon="inline-end" />
+                                </Link>
+                            </Button>
+                        }
+                    />
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {products.map((product) => (
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 </section>

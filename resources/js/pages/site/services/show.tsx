@@ -1,30 +1,34 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRightIcon, CheckCircle2Icon } from 'lucide-react';
+import { ArticleCard } from '@/components/site/article-card';
 import { CaseStudyCard } from '@/components/site/case-study-card';
 import { ContentIcon } from '@/components/site/content-icon';
 import { PageHeader } from '@/components/page-header';
+import { RichText } from '@/components/rich-text';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { home } from '@/routes';
 import { create as consultationCreate } from '@/routes/consultation';
-import { index, show } from '@/routes/services';
-import type { CaseStudy, Service } from '@/types';
+import { index } from '@/routes/expertises';
+import { show } from '@/routes/services';
+import type { Article, CaseStudy, Service } from '@/types';
 
 type Props = {
     service: Service;
     caseStudies: CaseStudy[];
+    articles: Article[];
 };
 
-export default function ServiceShow({ service, caseStudies }: Props) {
+export default function ServiceShow({ service, caseStudies, articles }: Props) {
     const pageHeader = {
         breadcrumbs: [
             { title: 'Beranda', href: home() },
-            { title: 'Layanan', href: index() },
+            { title: 'Keahlian', href: index() },
             { title: service.name, href: show(service.slug) },
         ],
         title: service.name,
-        description: service.headline ?? service.pillar.label,
+        description: service.headline ?? service.expertise?.name ?? '',
     };
 
     return (
@@ -41,7 +45,7 @@ export default function ServiceShow({ service, caseStudies }: Props) {
                                 <ContentIcon iconName={service.icon} />
                             </span>
                             <Badge variant="secondary">
-                                {service.pillar.label}
+                                {service.expertise?.name}
                             </Badge>
                         </div>
                         {service.problem_statement && (
@@ -49,12 +53,12 @@ export default function ServiceShow({ service, caseStudies }: Props) {
                                 {service.problem_statement}
                             </p>
                         )}
-                        {service.body &&
-                            service.body !== service.problem_statement && (
-                                <p className="leading-relaxed whitespace-pre-line text-muted-foreground">
-                                    {service.body}
-                                </p>
-                            )}
+                        {service.body && (
+                            <RichText
+                                html={service.body}
+                                className="text-muted-foreground"
+                            />
+                        )}
                     </CardContent>
                 </Card>
 
@@ -132,6 +136,18 @@ export default function ServiceShow({ service, caseStudies }: Props) {
                                 key={caseStudy.id}
                                 caseStudy={caseStudy}
                             />
+                        ))}
+                    </CardContent>
+                </Card>
+            )}
+            {articles.length > 0 && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Insight terkait</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {articles.map((article) => (
+                            <ArticleCard key={article.id} article={article} />
                         ))}
                     </CardContent>
                 </Card>

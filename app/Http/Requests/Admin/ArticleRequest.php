@@ -25,6 +25,7 @@ class ArticleRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->mergeSlugFrom('title');
+        $this->mergeRichText(['body']);
     }
 
     /**

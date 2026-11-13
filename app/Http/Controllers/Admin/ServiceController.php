@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\ServicePillar;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ServiceRequest;
 use App\Http\Resources\ServiceResource;
+use App\Models\Expertise;
 use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -20,7 +20,7 @@ class ServiceController extends Controller
     {
         return Inertia::render('admin/services/index', [
             'services' => ServiceResource::collection(
-                Service::query()->withCount('caseStudies')->ordered()->get(),
+                Service::query()->with('expertise')->withCount('caseStudies')->ordered()->get(),
             )->resolve(),
         ]);
     }
@@ -32,7 +32,7 @@ class ServiceController extends Controller
     {
         return Inertia::render('admin/services/form', [
             'service' => null,
-            'pillarOptions' => ServicePillar::options(),
+            'expertiseOptions' => $this->expertiseOptions(),
         ]);
     }
 
@@ -59,7 +59,7 @@ class ServiceController extends Controller
     {
         return Inertia::render('admin/services/form', [
             'service' => (new ServiceResource($service))->resolve(),
-            'pillarOptions' => ServicePillar::options(),
+            'expertiseOptions' => $this->expertiseOptions(),
         ]);
     }
 
@@ -89,5 +89,17 @@ class ServiceController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Layanan berhasil dihapus.']);
 
         return to_route('admin.services.index');
+    }
+
+    /**
+     * Expertise options for the service form.
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    private function expertiseOptions(): array
+    {
+        return Expertise::query()->ordered()->get(['id', 'name'])
+            ->map(fn (Expertise $expertise): array => ['value' => (string) $expertise->id, 'label' => $expertise->name])
+            ->all();
     }
 }

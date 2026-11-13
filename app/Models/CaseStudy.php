@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\RichTextHtml;
 use App\Enums\OrganizationType;
 use App\Models\Concerns\HasPublication;
 use Database\Factories\CaseStudyFactory;
@@ -61,6 +62,10 @@ class CaseStudy extends Model
     protected function casts(): array
     {
         return [
+            'challenge' => RichTextHtml::class,
+            'assessment' => RichTextHtml::class,
+            'recommendation' => RichTextHtml::class,
+            'solution' => RichTextHtml::class,
             'organization_type' => OrganizationType::class,
             'results' => 'array',
             'key_insights' => 'array',

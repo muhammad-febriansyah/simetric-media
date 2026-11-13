@@ -63,3 +63,13 @@ test('shows the placement options grouped by type', function () {
             ->has('placementGroups.1.options', 1)
         );
 });
+
+test('sanitizes the FAQ answer from the rich text editor', function () {
+    $this->post(route('admin.faqs.store'), [
+        'placement' => 'page:how-we-work',
+        'question' => 'Apakah aman?',
+        'answer' => '<p>Ya, <strong>aman</strong>.</p><img src="x" onerror="alert(1)">',
+    ])->assertSessionHasNoErrors();
+
+    expect(Faq::query()->sole()->answer)->toBe('<p>Ya, <strong>aman</strong>.</p>');
+});

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\ServicePillar;
 use App\Http\Requests\Admin\Concerns\PreparesContentInput;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,6 +25,7 @@ class ServiceRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->mergeSlugFrom('name');
+        $this->mergeRichText(['body']);
         $this->mergeFilledRows('capabilities', ['title', 'description']);
         $this->mergeFilledRows('methodology', ['title', 'description']);
     }
@@ -40,7 +40,7 @@ class ServiceRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:150'],
             'slug' => ['required', 'string', 'max:170', Rule::unique('services', 'slug')->ignore($this->route('service'))],
-            'pillar' => ['required', Rule::enum(ServicePillar::class)],
+            'expertise_id' => ['required', 'integer', Rule::exists('expertises', 'id')],
             'headline' => ['nullable', 'string', 'max:200'],
             'problem_statement' => ['nullable', 'string', 'max:2000'],
             'body' => ['nullable', 'string', 'max:20000'],
@@ -65,7 +65,7 @@ class ServiceRequest extends FormRequest
         return [
             'name' => 'Nama layanan',
             'slug' => 'Slug',
-            'pillar' => 'Pilar layanan',
+            'expertise_id' => 'Bidang keahlian',
             'headline' => 'Headline',
             'problem_statement' => 'Masalah yang diselesaikan',
             'body' => 'Penjelasan detail',

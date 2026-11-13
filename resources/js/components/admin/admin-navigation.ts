@@ -2,6 +2,7 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import {
     ArchiveRestoreIcon,
+    BoxIcon,
     CircleHelpIcon,
     LightbulbIcon,
     QuoteIcon,
@@ -13,6 +14,7 @@ import {
     FolderKanbanIcon,
     HandshakeIcon,
     HistoryIcon,
+    LayersIcon,
     InboxIcon,
     LayoutGridIcon,
     MapPinIcon,
@@ -22,6 +24,10 @@ import {
     UserIcon,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
+import {
+    create as createExpertise,
+    index as expertisesIndex,
+} from '@/routes/admin/expertises';
 import {
     create as createArticle,
     index as articlesIndex,
@@ -44,6 +50,10 @@ import {
     create as createSolution,
     index as solutionsIndex,
 } from '@/routes/admin/solutions';
+import {
+    create as createProduct,
+    index as productsIndex,
+} from '@/routes/admin/products';
 import { index as teamMembersIndex } from '@/routes/admin/team-members';
 import { index as testimonialsIndex } from '@/routes/admin/testimonials';
 import { index as trashIndex } from '@/routes/admin/trash';
@@ -109,6 +119,17 @@ export const adminNavGroups: AdminNavGroup[] = [
                 keywords: ['portfolio', 'proyek', 'case study'],
             },
             {
+                title: 'Bidang Keahlian',
+                href: expertisesIndex(),
+                icon: LayersIcon,
+                keywords: [
+                    'expertise',
+                    'pilar',
+                    'keahlian',
+                    'kategori layanan',
+                ],
+            },
+            {
                 title: 'Layanan',
                 href: servicesIndex(),
                 icon: BriefcaseBusinessIcon,
@@ -119,6 +140,12 @@ export const adminNavGroups: AdminNavGroup[] = [
                 href: solutionsIndex(),
                 icon: LightbulbIcon,
                 keywords: ['solution', 'divisi', 'fungsi bisnis'],
+            },
+            {
+                title: 'Produk',
+                href: productsIndex(),
+                icon: BoxIcon,
+                keywords: ['product', 'saas', 'aplikasi', 'platform'],
             },
             {
                 title: 'Industri',
@@ -205,10 +232,16 @@ export const adminNavGroups: AdminNavGroup[] = [
  */
 export const adminQuickActions: AdminNavItem[] = [
     { title: 'Tambah studi kasus', href: createCaseStudy(), icon: PlusIcon },
+    {
+        title: 'Tambah bidang keahlian',
+        href: createExpertise(),
+        icon: PlusIcon,
+    },
     { title: 'Tambah layanan', href: createService(), icon: PlusIcon },
     { title: 'Tambah industri', href: createIndustry(), icon: PlusIcon },
     { title: 'Tulis artikel', href: createArticle(), icon: PlusIcon },
     { title: 'Tambah solusi', href: createSolution(), icon: PlusIcon },
+    { title: 'Tambah produk', href: createProduct(), icon: PlusIcon },
     { title: 'Tambah pengguna', href: createUser(), icon: PlusIcon },
 ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Admin\Concerns\PreparesContentInput;
 use App\Models\Faq;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -10,12 +11,22 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FaqRequest extends FormRequest
 {
+    use PreparesContentInput;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
         return $this->user()?->can('access-admin') ?? false;
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->mergeRichText(['answer']);
     }
 
     /**
@@ -37,7 +48,7 @@ class FaqRequest extends FormRequest
                 },
             ],
             'question' => ['required', 'string', 'max:255'],
-            'answer' => ['required', 'string', 'max:3000'],
+            'answer' => ['required', 'string', 'max:5000'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ];

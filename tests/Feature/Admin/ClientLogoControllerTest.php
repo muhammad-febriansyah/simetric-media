@@ -2,6 +2,7 @@
 
 use App\Models\ClientLogo;
 use App\Models\Industry;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -28,6 +29,18 @@ test('creates a client logo linked to an industry', function () {
     expect($clientLogo->industry_id)->toBe($industry->id)
         ->and($clientLogo->is_active)->toBeTrue();
     Storage::disk('public')->assertExists($clientLogo->logo);
+});
+
+test('links a client logo to a product', function () {
+    $product = Product::factory()->create();
+
+    $this->post(route('admin.client-logos.store'), [
+        'name' => 'ARTOTEL Yogyakarta',
+        'product_id' => $product->id,
+        'logo' => UploadedFile::fake()->image('logo.png'),
+    ])->assertSessionHasNoErrors();
+
+    expect(ClientLogo::query()->sole()->product_id)->toBe($product->id);
 });
 
 test('requires a logo file when creating', function () {

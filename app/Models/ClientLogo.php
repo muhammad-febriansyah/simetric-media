@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property int $id
  * @property int|null $industry_id
+ * @property int|null $product_id
  * @property string $name
  * @property string $logo
  * @property string|null $website_url
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Carbon|null $updated_at
  * @property-read string $logo_url
  */
-#[Fillable(['industry_id', 'name', 'logo', 'website_url', 'sort_order', 'is_active'])]
+#[Fillable(['industry_id', 'product_id', 'name', 'logo', 'website_url', 'sort_order', 'is_active'])]
 #[Appends(['logo_url'])]
 class ClientLogo extends Model
 {
@@ -48,6 +49,14 @@ class ClientLogo extends Model
     public function industry(): BelongsTo
     {
         return $this->belongsTo(Industry::class);
+    }
+
+    /**
+     * @return BelongsTo<Product, $this>
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
     }
 
     /**

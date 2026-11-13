@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
+import { RichText } from '@/components/rich-text';
 import { CaseStudyCard } from '@/components/site/case-study-card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -34,7 +35,7 @@ type Props = {
 type JourneyStep = {
     title: string;
     icon: LucideIcon;
-    body: string | null;
+    body: string;
 };
 
 function MetaItem({
@@ -63,7 +64,7 @@ export default function CaseStudyShow({
     caseStudy,
     relatedCaseStudies,
 }: Props) {
-    const journey: JourneyStep[] = [
+    const journey = [
         { title: 'Tantangan', icon: TargetIcon, body: caseStudy.challenge },
         {
             title: 'Temuan assessment',
@@ -211,9 +212,10 @@ export default function CaseStudyShow({
                                     <h2 className="text-lg font-semibold">
                                         {step.title}
                                     </h2>
-                                    <p className="leading-relaxed whitespace-pre-line text-muted-foreground">
-                                        {step.body}
-                                    </p>
+                                    <RichText
+                                        html={step.body}
+                                        className="text-muted-foreground"
+                                    />
                                 </div>
                             </li>
                         ))}

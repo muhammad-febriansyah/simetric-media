@@ -23,6 +23,8 @@ function validSiteSettings(array $overrides = []): array
         'contact_phone' => '021-1234567',
         'contact_whatsapp' => '6281234567890',
         'contact_address' => 'Bandung, Indonesia',
+        'expertise_page_title' => 'Keahlian Kami',
+        'expertise_page_description' => 'Kami mendampingi bisnis Anda dari A sampai Z.',
         ...$overrides,
     ];
 }

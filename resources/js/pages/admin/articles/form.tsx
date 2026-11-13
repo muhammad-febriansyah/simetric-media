@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import ArticleController from '@/actions/App/Http/Controllers/Admin/ArticleController';
 import { FormActions } from '@/components/admin/form-actions';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { PublicationCard } from '@/components/admin/publication-card';
 import { SeoCard } from '@/components/admin/seo-card';
@@ -130,13 +131,13 @@ export default function ArticleForm({ article, serviceOptions }: Props) {
                                             required
                                             error={errors.body}
                                         >
-                                            <Textarea
+                                            <RichTextEditor
                                                 id="body"
                                                 name="body"
-                                                required
-                                                rows={16}
+                                                label="Isi artikel"
                                                 defaultValue={article?.body}
                                                 placeholder="Tulis isi artikel di sini."
+                                                invalid={Boolean(errors.body)}
                                             />
                                         </FormField>
                                         <ImageUploadField

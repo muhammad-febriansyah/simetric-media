@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import FaqController from '@/actions/App/Http/Controllers/Admin/FaqController';
 import { FormActions } from '@/components/admin/form-actions';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { VisibilityCard } from '@/components/admin/visibility-card';
 import { FormField } from '@/components/form-field';
 import { PageHeader } from '@/components/page-header';
@@ -22,7 +23,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { dashboard } from '@/routes';
 import { create, edit, index } from '@/routes/admin/faqs';
 import type { Faq, OptionGroup } from '@/types';
@@ -145,13 +145,14 @@ export default function FaqForm({ faq, placementGroups }: Props) {
                                             required
                                             error={errors.answer}
                                         >
-                                            <Textarea
+                                            <RichTextEditor
                                                 id="answer"
                                                 name="answer"
-                                                required
-                                                rows={6}
+                                                label="Jawaban"
                                                 defaultValue={faq?.answer}
                                                 placeholder="Jawab singkat dan jelas, tanpa istilah teknis."
+                                                invalid={Boolean(errors.answer)}
+                                                compact
                                             />
                                         </FormField>
                                     </FieldGroup>

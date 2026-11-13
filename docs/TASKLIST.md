@@ -50,6 +50,7 @@ Prioritas: **panel admin dulu**, website publik menyusul.
 - [x] Migration + model + factory: `industries`, `services`, `case_studies`, `case_study_service`
 - [x] Migration + model + factory: `consultation_requests`, `lead_activities`
 - [x] Seeder konten contoh (6 industri, 6 layanan, 3 studi kasus) + user admin (`admin@example.com`)
+- [x] `DemoSeeder` terpisah: 20 data fiktif-realistis per menu + gambar (Unsplash, avatar DiceBear, logo SVG) di `storage/app/public/demo`. Jalankan manual: `php artisan db:seed --class=DemoSeeder`. Hapus data demo sebelum live
 - [x] Registrasi publik dimatikan (akun admin dari seeder)
 
 ### Panel admin
@@ -84,6 +85,10 @@ Prioritas: **panel admin dulu**, website publik menyusul.
 
 - [x] Pengguna: tambah, edit, reset password, cabut akses admin, hapus (tidak bisa hapus/cabut akun sendiri)
 - [x] Solusi per divisi bisnis + relasi ke studi kasus
+- [x] Bidang Keahlian (pengganti enum pilar) + halaman publik `/keahlian` bergaya Suitmedia Expertises, intro dari Pengaturan Website, insight terkait, redirect `/layanan`
+- [x] Halaman publik Insight (`/insight`, `/insight/{slug}`) dengan filter kategori
+- [x] Rich text editor (Tiptap) untuk 9 field konten panjang + sanitasi HTML di server (symfony/html-sanitizer) + migration konversi teks lama ke HTML
+- [x] Produk milik perusahaan (admin CRUD, `/produk`, section Beranda) + `ProductSeeder` berisi LegalPartner.ID, ChatCepat, KarirConnect dengan logo & cover di `database/seeders/assets/products`
 - [x] FAQ (halaman statis, layanan, industri, solusi)
 - [x] Tim (foto, jabatan, LinkedIn)
 - [x] Testimoni (foto, terkait studi kasus)

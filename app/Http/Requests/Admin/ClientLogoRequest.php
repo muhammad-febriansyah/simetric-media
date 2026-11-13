@@ -26,6 +26,7 @@ class ClientLogoRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:150'],
             'industry_id' => ['nullable', 'integer', Rule::exists('industries', 'id')],
+            'product_id' => ['nullable', 'integer', Rule::exists('products', 'id')],
             'logo' => [$this->route('client_logo') ? 'nullable' : 'required', 'file', 'mimes:jpg,jpeg,png,webp,svg', 'max:1024'],
             'website_url' => ['nullable', 'url', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -41,6 +42,7 @@ class ClientLogoRequest extends FormRequest
         return [
             'name' => 'Nama klien',
             'industry_id' => 'Industri',
+            'product_id' => 'Produk',
             'logo' => 'Logo',
             'website_url' => 'Website',
             'sort_order' => 'Urutan',

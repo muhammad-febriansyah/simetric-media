@@ -56,6 +56,9 @@ class SiteSetting extends Model
         'seo_og_image' => null,
         'google_analytics_id' => null,
         'google_site_verification' => null,
+        // Pages
+        'expertise_page_title' => 'company.pages.expertise.title',
+        'expertise_page_description' => 'company.pages.expertise.description',
     ];
 
     /**

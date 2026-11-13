@@ -58,17 +58,18 @@ Prinsip komunikasi:
 
 ### 5.1 Website publik
 
-| Halaman           | URL                                   | Tujuan                                                                                        |
-| ----------------- | ------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Beranda           | `/`                                   | Menyampaikan positioning konsultan, alur A–Z ringkas, studi kasus unggulan, industri, dan CTA |
-| Cara Kami Bekerja | `/cara-kerja`                         | Menjelaskan 7 tahap konsultasi beserta FAQ                                                    |
-| Layanan           | `/layanan`, `/layanan/{slug}`         | 4 pilar: Konsultasi & Strategi, Desain, Pengembangan, Pendampingan                            |
-| Solusi            | `/solusi`, `/solusi/{slug}`           | Solusi per divisi bisnis: Operasional, Penjualan, Keuangan, SDM, IT                           |
-| Industri          | `/industri`, `/industri/{slug}`       | Pain point per industri dan studi kasus terkait                                               |
-| Studi Kasus       | `/studi-kasus`, `/studi-kasus/{slug}` | Bukti kerja, dengan filter industri dan layanan                                               |
-| Insight           | `/insight`, `/insight/{slug}`         | Artikel untuk SEO dan menunjukkan keahlian                                                    |
-| Tentang           | `/tentang`                            | Profil, nilai perusahaan, tim                                                                 |
-| Konsultasi        | `/konsultasi`                         | Form konsultasi multi-step (CTA utama)                                                        |
+| Halaman           | URL                                   | Tujuan                                                                                                                            |
+| ----------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Beranda           | `/`                                   | Menyampaikan positioning konsultan, alur A–Z ringkas, studi kasus unggulan, industri, dan CTA                                     |
+| Cara Kami Bekerja | `/cara-kerja`                         | Menjelaskan 7 tahap konsultasi beserta FAQ                                                                                        |
+| Keahlian          | `/keahlian`, `/keahlian/{slug}`       | Bidang keahlian (dikelola di admin) berisi layanan + insight terkait; `/layanan` redirect 301                                     |
+| Solusi            | `/solusi`, `/solusi/{slug}`           | Solusi per divisi bisnis: Operasional, Penjualan, Keuangan, SDM, IT                                                               |
+| Industri          | `/industri`, `/industri/{slug}`       | Pain point per industri dan studi kasus terkait                                                                                   |
+| Studi Kasus       | `/studi-kasus`, `/studi-kasus/{slug}` | Bukti kerja, dengan filter industri dan layanan                                                                                   |
+| Produk            | `/produk`, `/produk/{slug}`           | Produk digital milik perusahaan (LegalPartner.ID, ChatCepat, KarirConnect) sebagai bukti kemampuan membangun aplikasi sampai live |
+| Insight           | `/insight`, `/insight/{slug}`         | Artikel untuk SEO dan menunjukkan keahlian, filter kategori (sudah ada)                                                           |
+| Tentang           | `/tentang`                            | Profil, nilai perusahaan, tim                                                                                                     |
+| Konsultasi        | `/konsultasi`                         | Form konsultasi multi-step (CTA utama)                                                                                            |
 
 ### 5.2 Panel admin (`/admin`, wajib login + `is_admin`)
 
@@ -77,8 +78,10 @@ Prinsip komunikasi:
 | Dashboard                                 | Ringkasan lead baru, lead per status, konten terbaru                  |
 | Lead Konsultasi                           | List (data table), detail, ubah status, assign PIC, catatan aktivitas |
 | Studi Kasus                               | CRUD + publish/unpublish                                              |
-| Layanan                                   | CRUD                                                                  |
+| Bidang Keahlian                           | CRUD pilar layanan (nama, deskripsi, ikon, urutan, terbit, SEO)       |
+| Layanan                                   | CRUD, wajib memilih bidang keahlian                                   |
 | Solusi                                    | CRUD + fitur + SEO (sudah ada)                                        |
+| Produk                                    | CRUD + logo, cover, fitur, angka sorotan, tampil di Beranda, SEO      |
 | Industri                                  | CRUD                                                                  |
 | Insight                                   | CRUD artikel + layanan terkait + SEO (sudah ada)                      |
 | FAQ                                       | CRUD, dikaitkan ke halaman/layanan/industri/solusi (sudah ada)        |
@@ -163,7 +166,7 @@ Rincian tugas ada di `TASKLIST.md`.
 
 ## 11. Di Luar Scope
 
-- Halaman katalog produk (diganti dengan Solusi berbasis masalah).
+- Katalog produk/paket jasa untuk dijual (diganti dengan Solusi berbasis masalah). Menu Produk hanya menampilkan produk digital milik perusahaan sebagai portofolio.
 - Portal klien atau login untuk klien.
 - Pembayaran online.
 - Dark mode.

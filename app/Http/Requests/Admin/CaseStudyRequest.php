@@ -26,6 +26,7 @@ class CaseStudyRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->mergeSlugFrom('title');
+        $this->mergeRichText(['challenge', 'assessment', 'recommendation', 'solution']);
         $this->mergeFilledRows('results', ['label', 'value']);
         $this->mergeFilledRows('key_insights', ['title', 'description']);
     }
@@ -59,10 +60,10 @@ class CaseStudyRequest extends FormRequest
             'image_captions.*' => ['nullable', 'string', 'max:200'],
             'image_sort_orders' => ['nullable', 'array'],
             'image_sort_orders.*' => ['nullable', 'integer', 'min:0'],
-            'challenge' => ['required', 'string', 'max:5000'],
-            'assessment' => ['nullable', 'string', 'max:5000'],
-            'recommendation' => ['nullable', 'string', 'max:5000'],
-            'solution' => ['required', 'string', 'max:5000'],
+            'challenge' => ['required', 'string', 'max:10000'],
+            'assessment' => ['nullable', 'string', 'max:10000'],
+            'recommendation' => ['nullable', 'string', 'max:10000'],
+            'solution' => ['required', 'string', 'max:10000'],
             'results' => ['nullable', 'array', 'max:6'],
             'results.*.label' => ['required', 'string', 'max:60'],
             'results.*.value' => ['required', 'string', 'max:60'],

@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import {
     GlobeIcon,
+    LayoutTemplateIcon,
     MapPinIcon,
     SaveIcon,
     SearchIcon,
@@ -28,7 +29,7 @@ import { dashboard } from '@/routes';
 import { edit } from '@/routes/admin/site-settings';
 import type { SiteSettings } from '@/types';
 
-type TabKey = 'general' | 'contact' | 'social' | 'seo';
+type TabKey = 'general' | 'contact' | 'social' | 'seo' | 'pages';
 
 const TABS: {
     key: TabKey;
@@ -86,6 +87,12 @@ const TABS: {
             'google_analytics_id',
             'google_site_verification',
         ],
+    },
+    {
+        key: 'pages',
+        label: 'Halaman',
+        icon: LayoutTemplateIcon,
+        fields: ['expertise_page_title', 'expertise_page_description'],
     },
 ];
 
@@ -667,6 +674,71 @@ export default function WebsiteSettings({
                                     </Card>
                                 </div>
                             </TabsContent>
+
+                            <TabsContent
+                                value="pages"
+                                forceMount
+                                className="data-[state=inactive]:hidden"
+                            >
+                                <div className="grid items-start gap-6 xl:grid-cols-2">
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>
+                                                Halaman Keahlian
+                                            </CardTitle>
+                                            <CardDescription>
+                                                Judul dan intro di bagian atas
+                                                halaman /keahlian.
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <FieldGroup className="gap-5">
+                                                <FormField
+                                                    label="Judul halaman"
+                                                    htmlFor="expertise_page_title"
+                                                    required
+                                                    error={
+                                                        errors.expertise_page_title
+                                                    }
+                                                >
+                                                    <Input
+                                                        id="expertise_page_title"
+                                                        name="expertise_page_title"
+                                                        required
+                                                        maxLength={100}
+                                                        defaultValue={
+                                                            settings.expertise_page_title ??
+                                                            ''
+                                                        }
+                                                        placeholder="Contoh: Dari Strategi sampai Aplikasi yang Berjalan"
+                                                    />
+                                                </FormField>
+                                                <FormField
+                                                    label="Intro"
+                                                    htmlFor="expertise_page_description"
+                                                    required
+                                                    description="Maksimal 400 karakter."
+                                                    error={
+                                                        errors.expertise_page_description
+                                                    }
+                                                >
+                                                    <Textarea
+                                                        id="expertise_page_description"
+                                                        name="expertise_page_description"
+                                                        required
+                                                        maxLength={400}
+                                                        defaultValue={
+                                                            settings.expertise_page_description ??
+                                                            ''
+                                                        }
+                                                        placeholder="Jelaskan secara singkat cara Anda mendampingi klien dari A sampai Z."
+                                                    />
+                                                </FormField>
+                                            </FieldGroup>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </TabsContent>
                         </Tabs>
 
                         <Card className="sticky bottom-4 z-10 border border-border py-3 shadow-[0_8px_30px_-12px_rgb(37_71_249_/_0.25)]">
@@ -705,5 +777,5 @@ WebsiteSettings.layout = {
     ],
     title: 'Pengaturan Website',
     description:
-        'Nama website, logo, favicon, kontak, Google Maps, media sosial, dan SEO.',
+        'Nama website, logo, favicon, kontak, Google Maps, media sosial, SEO, dan intro halaman.',
 };

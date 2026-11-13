@@ -26,6 +26,7 @@ class SolutionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->mergeSlugFrom('name');
+        $this->mergeRichText(['body']);
         $this->mergeFilledRows('features', ['title', 'description']);
     }
 

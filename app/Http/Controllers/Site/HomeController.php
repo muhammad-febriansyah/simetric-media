@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CaseStudyResource;
 use App\Http\Resources\IndustryResource;
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\ServiceResource;
 use App\Models\CaseStudy;
 use App\Models\Industry;
+use App\Models\Product;
 use App\Models\Service;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,13 +24,16 @@ class HomeController extends Controller
         return Inertia::render('site/home', [
             'process' => config('company.process'),
             'services' => ServiceResource::collection(
-                Service::query()->published()->ordered()->limit(6)->get(),
+                Service::query()->published()->with('expertise')->ordered()->limit(6)->get(),
             )->resolve(),
             'industries' => IndustryResource::collection(
                 Industry::query()->published()->ordered()->get(),
             )->resolve(),
             'featuredCaseStudies' => CaseStudyResource::collection(
                 CaseStudy::query()->published()->where('is_featured', true)->with('industry')->ordered()->limit(3)->get(),
+            )->resolve(),
+            'products' => ProductResource::collection(
+                Product::query()->published()->where('is_featured', true)->ordered()->limit(6)->get(),
             )->resolve(),
         ]);
     }

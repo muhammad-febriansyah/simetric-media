@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import SolutionController from '@/actions/App/Http/Controllers/Admin/SolutionController';
 import { FormActions } from '@/components/admin/form-actions';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { IconSelect } from '@/components/admin/icon-select';
 import { OptionSelect } from '@/components/admin/option-select';
 import { PublicationCard } from '@/components/admin/publication-card';
@@ -171,14 +172,17 @@ export default function SolutionForm({
                                                 htmlFor="body"
                                                 error={errors.body}
                                             >
-                                                <Textarea
+                                                <RichTextEditor
                                                     id="body"
                                                     name="body"
-                                                    rows={6}
+                                                    label="Penjelasan detail"
                                                     defaultValue={
-                                                        solution?.body ?? ''
+                                                        solution?.body
                                                     }
                                                     placeholder="Cara kerja solusi dan manfaatnya untuk tim klien."
+                                                    invalid={Boolean(
+                                                        errors.body,
+                                                    )}
                                                 />
                                             </FormField>
                                         </FieldGroup>

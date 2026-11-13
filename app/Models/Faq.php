@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\RichTextHtml;
 use Database\Factories\FaqFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,6 +48,7 @@ class Faq extends Model
     protected function casts(): array
     {
         return [
+            'answer' => RichTextHtml::class,
             'sort_order' => 'integer',
             'is_active' => 'boolean',
         ];

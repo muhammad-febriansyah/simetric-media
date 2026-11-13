@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\BusinessFunction;
 use App\Enums\OfficeType;
 use App\Enums\OrganizationType;
-use App\Enums\ServicePillar;
 use App\Models\Article;
 use App\Models\CaseStudy;
 use App\Models\CompanyMilestone;
@@ -69,29 +68,31 @@ class ContentSeeder extends Seeder
             ],
         ));
 
+        $expertiseIds = ExpertiseSeeder::ids();
+
         $services = collect([
-            [ServicePillar::Consulting, 'Konsultasi & Assessment Digital', 'search-check', 'Belum tahu teknologi apa yang tepat untuk bisnis Anda?',
+            ['consulting', 'Konsultasi & Assessment Digital', 'search-check', 'Belum tahu teknologi apa yang tepat untuk bisnis Anda?',
                 'Kami memetakan proses bisnis, sistem yang sudah ada, dan kebutuhan tim sebelum merekomendasikan solusi.',
                 ['Laporan assessment proses bisnis', 'Rekomendasi solusi dan prioritas', 'Roadmap, estimasi biaya, dan waktu']],
-            [ServicePillar::Consulting, 'Strategi Transformasi Digital', 'compass', 'Ingin digitalisasi, tapi takut salah langkah dan boros biaya?',
+            ['consulting', 'Strategi Transformasi Digital', 'compass', 'Ingin digitalisasi, tapi takut salah langkah dan boros biaya?',
                 'Kami menyusun strategi bertahap yang realistis sesuai kesiapan tim dan anggaran perusahaan.',
                 ['Peta jalan transformasi 12–24 bulan', 'Analisis kesiapan tim dan sistem', 'Rencana manajemen perubahan']],
-            [ServicePillar::Design, 'Desain Alur & UI/UX Aplikasi', 'pen-tool', 'Aplikasi yang tidak dipakai tim adalah investasi yang sia-sia.',
+            ['design', 'Desain Alur & UI/UX Aplikasi', 'pen-tool', 'Aplikasi yang tidak dipakai tim adalah investasi yang sia-sia.',
                 'Alur dan tampilan aplikasi kami validasi bersama pengguna Anda sebelum mulai dibangun.',
                 ['Pemetaan alur pengguna', 'Prototipe interaktif', 'Uji coba dengan pengguna']],
-            [ServicePillar::Development, 'Pengembangan Aplikasi Web & Mobile', 'code', 'Butuh aplikasi yang benar-benar sesuai proses bisnis Anda?',
+            ['development', 'Pengembangan Aplikasi Web & Mobile', 'code', 'Butuh aplikasi yang benar-benar sesuai proses bisnis Anda?',
                 'Kami membangun aplikasi custom secara iteratif dengan demo berkala, sehingga Anda selalu tahu progresnya.',
                 ['Aplikasi web dan mobile', 'Integrasi dengan sistem yang sudah ada', 'Dokumentasi teknis']],
-            [ServicePillar::Development, 'Integrasi Sistem & Otomasi', 'workflow', 'Data di banyak sistem yang tidak saling terhubung?',
+            ['development', 'Integrasi Sistem & Otomasi', 'workflow', 'Data di banyak sistem yang tidak saling terhubung?',
                 'Kami menghubungkan ERP, akuntansi, dan aplikasi operasional agar data mengalir otomatis.',
                 ['Integrasi API antar sistem', 'Otomasi laporan', 'Dashboard data terpusat']],
-            [ServicePillar::Support, 'Implementasi, Training & Pendampingan', 'life-buoy', 'Aplikasi sudah jadi, tapi tim belum siap memakainya?',
+            ['support', 'Implementasi, Training & Pendampingan', 'life-buoy', 'Aplikasi sudah jadi, tapi tim belum siap memakainya?',
                 'Kami mendampingi go-live, migrasi data, pelatihan pengguna, sampai support dan pengembangan lanjutan.',
                 ['Migrasi data', 'Pelatihan pengguna', 'Support dan maintenance berkala']],
         ])->map(fn (array $service, int $index): Service => Service::query()->updateOrCreate(
             ['slug' => Str::slug($service[1])],
             [
-                'pillar' => $service[0],
+                'expertise_id' => $expertiseIds[$service[0]],
                 'name' => $service[1],
                 'icon' => $service[2],
                 'headline' => $service[3],

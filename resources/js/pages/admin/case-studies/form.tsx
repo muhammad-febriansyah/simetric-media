@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import CaseStudyController from '@/actions/App/Http/Controllers/Admin/CaseStudyController';
 import { FormActions } from '@/components/admin/form-actions';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { OptionSelect } from '@/components/admin/option-select';
 import { PublicationCard } from '@/components/admin/publication-card';
@@ -350,15 +351,17 @@ export default function CaseStudyForm({
                                                 required
                                                 error={errors.challenge}
                                             >
-                                                <Textarea
+                                                <RichTextEditor
                                                     id="challenge"
                                                     name="challenge"
-                                                    required
-                                                    rows={4}
+                                                    label="Tantangan"
                                                     defaultValue={
                                                         caseStudy?.challenge
                                                     }
                                                     placeholder="Masalah bisnis yang dihadapi klien sebelum bekerja sama."
+                                                    invalid={Boolean(
+                                                        errors.challenge,
+                                                    )}
                                                 />
                                             </FormField>
                                             <FormField
@@ -366,15 +369,17 @@ export default function CaseStudyForm({
                                                 htmlFor="assessment"
                                                 error={errors.assessment}
                                             >
-                                                <Textarea
+                                                <RichTextEditor
                                                     id="assessment"
                                                     name="assessment"
-                                                    rows={4}
+                                                    label="Temuan assessment"
                                                     defaultValue={
-                                                        caseStudy?.assessment ??
-                                                        ''
+                                                        caseStudy?.assessment
                                                     }
                                                     placeholder="Apa yang ditemukan saat memetakan proses dan sistem klien."
+                                                    invalid={Boolean(
+                                                        errors.assessment,
+                                                    )}
                                                 />
                                             </FormField>
                                             <FormField
@@ -382,15 +387,17 @@ export default function CaseStudyForm({
                                                 htmlFor="recommendation"
                                                 error={errors.recommendation}
                                             >
-                                                <Textarea
+                                                <RichTextEditor
                                                     id="recommendation"
                                                     name="recommendation"
-                                                    rows={4}
+                                                    label="Rekomendasi"
                                                     defaultValue={
-                                                        caseStudy?.recommendation ??
-                                                        ''
+                                                        caseStudy?.recommendation
                                                     }
                                                     placeholder="Solusi dan prioritas yang direkomendasikan."
+                                                    invalid={Boolean(
+                                                        errors.recommendation,
+                                                    )}
                                                 />
                                             </FormField>
                                             <FormField
@@ -399,15 +406,17 @@ export default function CaseStudyForm({
                                                 required
                                                 error={errors.solution}
                                             >
-                                                <Textarea
+                                                <RichTextEditor
                                                     id="solution"
                                                     name="solution"
-                                                    required
-                                                    rows={4}
+                                                    label="Solusi"
                                                     defaultValue={
                                                         caseStudy?.solution
                                                     }
                                                     placeholder="Aplikasi atau sistem yang akhirnya dibangun dan diterapkan."
+                                                    invalid={Boolean(
+                                                        errors.solution,
+                                                    )}
                                                 />
                                             </FormField>
                                         </FieldGroup>

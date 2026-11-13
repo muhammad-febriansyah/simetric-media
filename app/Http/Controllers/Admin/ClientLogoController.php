@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\ClientLogoRequest;
 use App\Http\Resources\ClientLogoResource;
 use App\Models\ClientLogo;
 use App\Models\Industry;
+use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,7 +24,7 @@ class ClientLogoController extends Controller
     {
         return Inertia::render('admin/client-logos/index', [
             'clientLogos' => ClientLogoResource::collection(
-                ClientLogo::query()->with('industry')->orderBy('sort_order')->orderBy('name')->get(),
+                ClientLogo::query()->with(['industry', 'product'])->orderBy('sort_order')->orderBy('name')->get(),
             )->resolve(),
         ]);
     }
@@ -61,7 +62,7 @@ class ClientLogoController extends Controller
      */
     public function edit(ClientLogo $clientLogo): Response
     {
-        $clientLogo->load('industry');
+        $clientLogo->load(['industry', 'product']);
 
         return Inertia::render('admin/client-logos/form', [
             'clientLogo' => (new ClientLogoResource($clientLogo))->resolve(),
@@ -107,13 +108,15 @@ class ClientLogoController extends Controller
     /**
      * Select options for the client logo form.
      *
-     * @return array{industryOptions: mixed}
+     * @return array{industryOptions: mixed, productOptions: mixed}
      */
     private function formOptions(): array
     {
         return [
             'industryOptions' => Industry::query()->ordered()->get(['id', 'name'])
                 ->map(fn (Industry $industry): array => ['value' => (string) $industry->id, 'label' => $industry->name]),
+            'productOptions' => Product::query()->ordered()->get(['id', 'name'])
+                ->map(fn (Product $product): array => ['value' => (string) $product->id, 'label' => $product->name]),
         ];
     }
 }

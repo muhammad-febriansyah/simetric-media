@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\RichTextHtml;
 use App\Models\Concerns\HasPublication;
 use Database\Factories\ArticleFactory;
 use Illuminate\Database\Eloquent\Attributes\Appends;
@@ -47,6 +48,7 @@ class Article extends Model
     protected function casts(): array
     {
         return [
+            'body' => RichTextHtml::class,
             'published_at' => 'datetime',
         ];
     }

@@ -118,3 +118,67 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Content from the rich text editor (admin) and its public rendering. */
+@layer components {
+    .rich-text {
+        @apply leading-relaxed break-words;
+    }
+
+    .rich-text > * + * {
+        @apply mt-3;
+    }
+
+    .rich-text h2 {
+        @apply mt-6 text-xl font-semibold text-foreground;
+    }
+
+    .rich-text h3 {
+        @apply mt-5 text-lg font-semibold text-foreground;
+    }
+
+    .rich-text ul {
+        @apply list-disc pl-6;
+    }
+
+    .rich-text ol {
+        @apply list-decimal pl-6;
+    }
+
+    .rich-text li + li {
+        @apply mt-1;
+    }
+
+    .rich-text li > p {
+        @apply m-0;
+    }
+
+    .rich-text blockquote {
+        @apply border-l-4 border-primary/30 pl-4 text-muted-foreground italic;
+    }
+
+    .rich-text a {
+        @apply font-medium text-primary underline underline-offset-2;
+    }
+
+    .rich-text strong {
+        @apply font-semibold text-foreground;
+    }
+
+    .rich-text code {
+        @apply rounded bg-muted px-1.5 py-0.5 text-[0.9em];
+    }
+
+    .rich-text hr {
+        @apply my-6 border-border;
+    }
+
+    .rich-text > :first-child {
+        @apply mt-0;
+    }
+
+    .rich-text p.is-editor-empty:first-child::before {
+        @apply pointer-events-none float-left h-0 text-muted-foreground;
+        content: attr(data-placeholder);
+    }
+}

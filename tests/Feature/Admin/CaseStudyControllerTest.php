@@ -94,6 +94,18 @@ describe('store', function () {
             ]);
     });
 
+    test('sanitizes the journey fields from the rich text editor', function () {
+        $this->post(route('admin.case-studies.store'), validCaseStudyPayload([
+            'challenge' => '<ul><li>Stok selisih</li></ul><script>alert(1)</script>',
+            'assessment' => '<p></p>',
+        ]))->assertSessionHasNoErrors();
+
+        $caseStudy = CaseStudy::query()->sole();
+
+        expect($caseStudy->challenge)->toBe('<ul><li>Stok selisih</li></ul>')
+            ->and($caseStudy->assessment)->toBeNull();
+    });
+
     test('rejects a slug that is already used', function () {
         CaseStudy::factory()->create(['slug' => 'digitalisasi-gudang-distributor']);
 

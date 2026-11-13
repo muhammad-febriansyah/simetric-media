@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\ServicePillar;
+use App\Models\Expertise;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -24,7 +24,7 @@ class ServiceFactory extends Factory
         return [
             'name' => Str::title($name),
             'slug' => Str::slug($name).'-'.Str::lower(Str::random(4)),
-            'pillar' => fake()->randomElement(ServicePillar::cases()),
+            'expertise_id' => Expertise::factory(),
             'headline' => fake()->sentence(8),
             'problem_statement' => fake()->paragraph(),
             'body' => fake()->paragraphs(3, true),

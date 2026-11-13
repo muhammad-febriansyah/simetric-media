@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\ServicePillar;
+use App\Casts\RichTextHtml;
 use App\Models\Concerns\HasPublication;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
@@ -16,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $name
  * @property string $slug
- * @property ServicePillar $pillar
+ * @property int $expertise_id
  * @property string|null $headline
  * @property string|null $problem_statement
  * @property string|null $body
@@ -31,7 +32,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 #[Fillable([
-    'name', 'slug', 'pillar', 'headline', 'problem_statement', 'body', 'capabilities', 'methodology', 'icon',
+    'name', 'slug', 'expertise_id', 'headline', 'problem_statement', 'body', 'capabilities', 'methodology', 'icon',
     'sort_order', 'meta_title', 'meta_description', 'published_at',
 ])]
 class Service extends Model
@@ -45,12 +46,20 @@ class Service extends Model
     protected function casts(): array
     {
         return [
-            'pillar' => ServicePillar::class,
+            'body' => RichTextHtml::class,
             'capabilities' => 'array',
             'methodology' => 'array',
             'sort_order' => 'integer',
             'published_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return BelongsTo<Expertise, $this>
+     */
+    public function expertise(): BelongsTo
+    {
+        return $this->belongsTo(Expertise::class);
     }
 
     /**

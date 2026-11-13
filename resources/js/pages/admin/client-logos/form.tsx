@@ -22,11 +22,17 @@ import type { ClientLogo, Option } from '@/types';
 type Props = {
     clientLogo: ClientLogo | null;
     industryOptions: Option[];
+    productOptions: Option[];
 };
 
 const NO_INDUSTRY = 'none';
+const NONE_PRODUCT = 'none';
 
-export default function ClientLogoForm({ clientLogo, industryOptions }: Props) {
+export default function ClientLogoForm({
+    clientLogo,
+    industryOptions,
+    productOptions,
+}: Props) {
     const title = clientLogo ? 'Edit Logo Klien' : 'Tambah Logo Klien';
     const formAction = clientLogo
         ? ClientLogoController.update.form(clientLogo.id)
@@ -58,6 +64,10 @@ export default function ClientLogoForm({ clientLogo, industryOptions }: Props) {
                         data.industry_id === NO_INDUSTRY
                             ? null
                             : data.industry_id,
+                    product_id:
+                        data.product_id === NONE_PRODUCT
+                            ? null
+                            : data.product_id,
                 })}
             >
                 {({ errors, processing }) => (
@@ -111,6 +121,29 @@ export default function ClientLogoForm({ clientLogo, industryOptions }: Props) {
                                                     emptyValue={NO_INDUSTRY}
                                                     emptyLabel="Tanpa industri"
                                                     placeholder="Pilih industri"
+                                                />
+                                            </FormField>
+                                            <FormField
+                                                label="Produk terkait"
+                                                htmlFor="product_id"
+                                                error={errors.product_id}
+                                            >
+                                                <OptionSelect
+                                                    id="product_id"
+                                                    name="product_id"
+                                                    options={productOptions}
+                                                    defaultValue={
+                                                        clientLogo?.product
+                                                            ? String(
+                                                                  clientLogo
+                                                                      .product
+                                                                      .id,
+                                                              )
+                                                            : NONE_PRODUCT
+                                                    }
+                                                    emptyValue={NONE_PRODUCT}
+                                                    emptyLabel="Tidak terkait produk"
+                                                    placeholder="Pilih produk"
                                                 />
                                             </FormField>
                                         </div>

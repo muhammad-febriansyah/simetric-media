@@ -40,6 +40,16 @@ const columns: ColumnDef<ClientLogo>[] = [
         cell: ({ row }) => row.original.industry?.name ?? '-',
     },
     {
+        id: 'product',
+        header: 'Produk',
+        cell: ({ row }) =>
+            row.original.product ? (
+                <Badge variant="outline">{row.original.product.name}</Badge>
+            ) : (
+                '-'
+            ),
+    },
+    {
         accessorKey: 'sort_order',
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Urutan" />

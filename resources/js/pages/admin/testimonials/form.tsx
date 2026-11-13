@@ -23,13 +23,16 @@ import type { Option, Testimonial } from '@/types';
 type Props = {
     testimonial: Testimonial | null;
     caseStudyOptions: Option[];
+    productOptions: Option[];
 };
 
 const NONE = 'none';
+const NONE_PRODUCT = 'none';
 
 export default function TestimonialForm({
     testimonial,
     caseStudyOptions,
+    productOptions,
 }: Props) {
     const title = testimonial ? 'Edit Testimoni' : 'Tambah Testimoni';
     const formAction = testimonial
@@ -60,6 +63,10 @@ export default function TestimonialForm({
                     ...data,
                     case_study_id:
                         data.case_study_id === NONE ? null : data.case_study_id,
+                    product_id:
+                        data.product_id === NONE_PRODUCT
+                            ? null
+                            : data.product_id,
                 })}
             >
                 {({ errors, processing }) => (
@@ -167,6 +174,29 @@ export default function TestimonialForm({
                                                     emptyValue={NONE}
                                                     emptyLabel="Tidak terkait"
                                                     placeholder="Pilih studi kasus"
+                                                />
+                                            </FormField>
+                                            <FormField
+                                                label="Produk terkait"
+                                                htmlFor="product_id"
+                                                error={errors.product_id}
+                                            >
+                                                <OptionSelect
+                                                    id="product_id"
+                                                    name="product_id"
+                                                    options={productOptions}
+                                                    defaultValue={
+                                                        testimonial?.product
+                                                            ? String(
+                                                                  testimonial
+                                                                      .product
+                                                                      .id,
+                                                              )
+                                                            : NONE_PRODUCT
+                                                    }
+                                                    emptyValue={NONE_PRODUCT}
+                                                    emptyLabel="Tidak terkait produk"
+                                                    placeholder="Pilih produk"
                                                 />
                                             </FormField>
                                         </div>

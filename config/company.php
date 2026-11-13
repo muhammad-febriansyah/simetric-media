@@ -14,6 +14,13 @@ return [
 
     'tagline' => 'Konsultan teknologi yang mendampingi bisnis Anda dari A sampai Z.',
 
+    'pages' => [
+        'expertise' => [
+            'title' => 'Dari Strategi sampai Aplikasi yang Berjalan',
+            'description' => 'Kami mendampingi bisnis Anda dari A sampai Z: memetakan masalah, merancang solusi bersama tim Anda, membangun aplikasinya, lalu memastikan semuanya benar-benar dipakai.',
+        ],
+    ],
+
     'contact' => [
         'email' => env('COMPANY_EMAIL', 'halo@example.com'),
         'phone' => env('COMPANY_PHONE', '+62 21 0000 0000'),

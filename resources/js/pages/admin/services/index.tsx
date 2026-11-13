@@ -35,10 +35,12 @@ const columns: ColumnDef<Service>[] = [
         ),
     },
     {
-        id: 'pillar',
-        header: 'Pilar',
+        id: 'expertise',
+        header: 'Bidang keahlian',
         cell: ({ row }) => (
-            <Badge variant="outline">{row.original.pillar.label}</Badge>
+            <Badge variant="outline">
+                {row.original.expertise?.name ?? '-'}
+            </Badge>
         ),
     },
     {

@@ -5,11 +5,13 @@ use App\Http\Controllers\Admin\CaseStudyController;
 use App\Http\Controllers\Admin\ClientLogoController;
 use App\Http\Controllers\Admin\CompanyMilestoneController;
 use App\Http\Controllers\Admin\ConsultationRequestController;
+use App\Http\Controllers\Admin\ExpertiseController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\IndustryController;
 use App\Http\Controllers\Admin\LeadNoteController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OfficeController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\SolutionController;
@@ -32,6 +34,7 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])
         Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 
         Route::resource('case-studies', CaseStudyController::class)->except('show');
+        Route::resource('expertises', ExpertiseController::class)->except('show');
         Route::resource('services', ServiceController::class)->except('show');
         Route::resource('industries', IndustryController::class)->except('show');
         Route::resource('articles', ArticleController::class)->except('show');
@@ -40,6 +43,7 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])
             ->parameters(['milestones' => 'companyMilestone']);
         Route::resource('offices', OfficeController::class)->except('show');
         Route::resource('solutions', SolutionController::class)->except('show');
+        Route::resource('products', ProductController::class)->except('show');
         Route::resource('faqs', FaqController::class)->except('show');
         Route::resource('team-members', TeamMemberController::class)->except('show');
         Route::resource('testimonials', TestimonialController::class)->except('show');

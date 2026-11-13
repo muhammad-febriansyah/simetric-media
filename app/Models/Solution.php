@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\RichTextHtml;
 use App\Enums\BusinessFunction;
 use App\Models\Concerns\HasPublication;
 use Database\Factories\SolutionFactory;
@@ -46,6 +47,7 @@ class Solution extends Model
     protected function casts(): array
     {
         return [
+            'body' => RichTextHtml::class,
             'business_function' => BusinessFunction::class,
             'features' => 'array',
             'sort_order' => 'integer',

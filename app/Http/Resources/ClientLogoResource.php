@@ -26,6 +26,7 @@ class ClientLogoResource extends JsonResource
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
             'industry' => $this->whenLoaded('industry', fn (): ?array => $this->industry?->only(['id', 'name'])),
+            'product' => $this->whenLoaded('product', fn (): ?array => $this->product?->only(['id', 'name'])),
         ];
     }
 }

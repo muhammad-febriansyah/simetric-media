@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TestimonialRequest;
 use App\Http\Resources\TestimonialResource;
 use App\Models\CaseStudy;
+use App\Models\Product;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -23,7 +24,7 @@ class TestimonialController extends Controller
     {
         return Inertia::render('admin/testimonials/index', [
             'testimonials' => TestimonialResource::collection(
-                Testimonial::query()->with('caseStudy')->orderBy('sort_order')->latest()->get(),
+                Testimonial::query()->with(['caseStudy', 'product'])->orderBy('sort_order')->latest()->get(),
             )->resolve(),
         ]);
     }
@@ -61,7 +62,7 @@ class TestimonialController extends Controller
      */
     public function edit(Testimonial $testimonial): Response
     {
-        $testimonial->load('caseStudy');
+        $testimonial->load(['caseStudy', 'product']);
 
         return Inertia::render('admin/testimonials/form', [
             'testimonial' => (new TestimonialResource($testimonial))->resolve(),
@@ -114,6 +115,8 @@ class TestimonialController extends Controller
         return [
             'caseStudyOptions' => CaseStudy::query()->ordered()->get(['id', 'title'])
                 ->map(fn (CaseStudy $caseStudy): array => ['value' => (string) $caseStudy->id, 'label' => $caseStudy->title]),
+            'productOptions' => Product::query()->ordered()->get(['id', 'name'])
+                ->map(fn (Product $product): array => ['value' => (string) $product->id, 'label' => $product->name]),
         ];
     }
 }

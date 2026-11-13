@@ -15,6 +15,7 @@ test('admin pages forbid users without admin access', function (string $routeNam
 })->with([
     'admin.leads.index',
     'admin.case-studies.index',
+    'admin.expertises.index',
     'admin.services.index',
     'admin.industries.index',
     'admin.articles.index',
@@ -22,6 +23,7 @@ test('admin pages forbid users without admin access', function (string $routeNam
     'admin.milestones.index',
     'admin.offices.index',
     'admin.solutions.index',
+    'admin.products.index',
     'admin.faqs.index',
     'admin.team-members.index',
     'admin.testimonials.index',

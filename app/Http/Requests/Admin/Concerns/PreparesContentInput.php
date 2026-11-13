@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Concerns;
 
+use App\Support\RichText;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
 
@@ -18,6 +19,21 @@ trait PreparesContentInput
         $this->merge([
             'slug' => Str::slug((string) ($this->input('slug') ?: $this->input($sourceField, ''))),
         ]);
+    }
+
+    /**
+     * Sanitize HTML from the rich text editor. Empty editor content becomes null,
+     * so "required" rules still catch an empty editor.
+     *
+     * @param  list<string>  $fields
+     */
+    protected function mergeRichText(array $fields): void
+    {
+        foreach ($fields as $field) {
+            if ($this->has($field)) {
+                $this->merge([$field => RichText::sanitize($this->input($field))]);
+            }
+        }
     }
 
     /**

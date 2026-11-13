@@ -28,6 +28,7 @@ class TestimonialResource extends JsonResource
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
             'case_study' => $this->whenLoaded('caseStudy', fn (): ?array => $this->caseStudy?->only(['id', 'title'])),
+            'product' => $this->whenLoaded('product', fn (): ?array => $this->product?->only(['id', 'name'])),
         ];
     }
 }

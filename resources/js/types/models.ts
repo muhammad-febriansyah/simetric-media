@@ -17,11 +17,26 @@ export type Industry = {
     case_studies_count?: number;
 };
 
+export type Expertise = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string | null;
+    icon: string | null;
+    sort_order: number;
+    is_published: boolean;
+    meta_title: string | null;
+    meta_description: string | null;
+    services_count?: number;
+    services?: Service[];
+};
+
 export type Service = {
     id: number;
     name: string;
     slug: string;
-    pillar: Option;
+    expertise_id: number;
+    expertise?: RelatedRecord;
     headline: string | null;
     problem_statement: string | null;
     body: string | null;
@@ -160,6 +175,7 @@ export type ClientLogo = {
     sort_order: number;
     is_active: boolean;
     industry?: { id: number; name: string } | null;
+    product?: { id: number; name: string } | null;
 };
 
 export type CompanyMilestone = {
@@ -181,6 +197,26 @@ export type Office = {
     map_url: string | null;
     sort_order: number;
     is_active: boolean;
+};
+
+export type Product = {
+    id: number;
+    name: string;
+    slug: string;
+    category: string | null;
+    tagline: string | null;
+    summary: string | null;
+    body: string | null;
+    website_url: string | null;
+    logo_url: string | null;
+    cover_image_url: string | null;
+    features: TitledItem[];
+    highlights: CaseStudyResult[];
+    is_featured: boolean;
+    sort_order: number;
+    is_published: boolean;
+    meta_title: string | null;
+    meta_description: string | null;
 };
 
 export type Solution = {
@@ -236,6 +272,7 @@ export type Testimonial = {
     sort_order: number;
     is_active: boolean;
     case_study?: { id: number; title: string } | null;
+    product?: { id: number; name: string } | null;
 };
 
 export type AdminUser = {
@@ -285,4 +322,6 @@ export type SiteSettings = {
     seo_og_image_url: string | null;
     google_analytics_id: string | null;
     google_site_verification: string | null;
+    expertise_page_title: string | null;
+    expertise_page_description: string | null;
 };

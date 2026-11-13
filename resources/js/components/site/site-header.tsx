@@ -1,10 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    BoxIcon,
     BriefcaseBusinessIcon,
     Building2Icon,
     FolderKanbanIcon,
     MenuIcon,
     MessagesSquareIcon,
+    NewspaperIcon,
     RouteIcon,
 } from 'lucide-react';
 import { BrandMark } from '@/components/brand-mark';
@@ -22,14 +24,18 @@ import { cn } from '@/lib/utils';
 import { home, howWeWork } from '@/routes';
 import { index as caseStudiesIndex } from '@/routes/case-studies';
 import { create as consultationCreate } from '@/routes/consultation';
+import { index as expertisesIndex } from '@/routes/expertises';
 import { index as industriesIndex } from '@/routes/industries';
-import { index as servicesIndex } from '@/routes/services';
+import { index as insightsIndex } from '@/routes/insights';
+import { index as productsIndex } from '@/routes/products';
 
 export const siteNavItems = [
     { title: 'Cara Kami Bekerja', href: howWeWork(), icon: RouteIcon },
-    { title: 'Layanan', href: servicesIndex(), icon: BriefcaseBusinessIcon },
+    { title: 'Keahlian', href: expertisesIndex(), icon: BriefcaseBusinessIcon },
     { title: 'Industri', href: industriesIndex(), icon: Building2Icon },
     { title: 'Studi Kasus', href: caseStudiesIndex(), icon: FolderKanbanIcon },
+    { title: 'Produk', href: productsIndex(), icon: BoxIcon },
+    { title: 'Insight', href: insightsIndex(), icon: NewspaperIcon },
 ];
 
 export function SiteLogo() {
@@ -52,7 +58,7 @@ export function SiteHeader() {
                 <SiteLogo />
 
                 <nav
-                    className="hidden items-center gap-1 lg:flex"
+                    className="hidden items-center gap-1 xl:flex"
                     aria-label="Menu utama"
                 >
                     {siteNavItems.map((item) => (
@@ -87,7 +93,7 @@ export function SiteHeader() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="lg:hidden"
+                                className="xl:hidden"
                             >
                                 <MenuIcon />
                                 <span className="sr-only">Buka menu</span>

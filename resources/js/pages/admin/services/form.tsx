@@ -1,7 +1,9 @@
 import { Form, Head } from '@inertiajs/react';
 import ServiceController from '@/actions/App/Http/Controllers/Admin/ServiceController';
 import { FormActions } from '@/components/admin/form-actions';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { IconSelect } from '@/components/admin/icon-select';
+import { OptionSelect } from '@/components/admin/option-select';
 import { PublicationCard } from '@/components/admin/publication-card';
 import { RepeatableFields } from '@/components/admin/repeatable-fields';
 import type { RepeatableFieldDefinition } from '@/components/admin/repeatable-fields';
@@ -17,14 +19,6 @@ import {
 } from '@/components/ui/card';
 import { FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { dashboard } from '@/routes';
 import { create, edit, index } from '@/routes/admin/services';
@@ -32,7 +26,7 @@ import type { Option, Service } from '@/types';
 
 type Props = {
     service: Service | null;
-    pillarOptions: Option[];
+    expertiseOptions: Option[];
 };
 
 function titledItemFields(
@@ -55,7 +49,7 @@ function titledItemFields(
     ];
 }
 
-export default function ServiceForm({ service, pillarOptions }: Props) {
+export default function ServiceForm({ service, expertiseOptions }: Props) {
     const title = service ? 'Edit Layanan' : 'Tambah Layanan';
 
     const pageHeader = {
@@ -124,44 +118,24 @@ export default function ServiceForm({ service, pillarOptions }: Props) {
                                                 />
                                             </FormField>
                                             <FormField
-                                                label="Pilar layanan"
-                                                htmlFor="pillar"
+                                                label="Bidang keahlian"
+                                                htmlFor="expertise_id"
                                                 required
-                                                error={errors.pillar}
+                                                error={errors.expertise_id}
                                             >
-                                                <Select
-                                                    name="pillar"
+                                                <OptionSelect
+                                                    id="expertise_id"
+                                                    name="expertise_id"
+                                                    options={expertiseOptions}
                                                     defaultValue={
-                                                        service?.pillar.value
+                                                        service
+                                                            ? String(
+                                                                  service.expertise_id,
+                                                              )
+                                                            : undefined
                                                     }
-                                                >
-                                                    <SelectTrigger
-                                                        id="pillar"
-                                                        className="w-full"
-                                                    >
-                                                        <SelectValue placeholder="Pilih pilar layanan" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            {pillarOptions.map(
-                                                                (option) => (
-                                                                    <SelectItem
-                                                                        key={
-                                                                            option.value
-                                                                        }
-                                                                        value={
-                                                                            option.value
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            option.label
-                                                                        }
-                                                                    </SelectItem>
-                                                                ),
-                                                            )}
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
+                                                    placeholder="Pilih bidang keahlian"
+                                                />
                                             </FormField>
                                             <FormField
                                                 label="Headline (masalah klien)"
@@ -222,14 +196,15 @@ export default function ServiceForm({ service, pillarOptions }: Props) {
                                                 htmlFor="body"
                                                 error={errors.body}
                                             >
-                                                <Textarea
+                                                <RichTextEditor
                                                     id="body"
                                                     name="body"
-                                                    rows={8}
-                                                    defaultValue={
-                                                        service?.body ?? ''
-                                                    }
+                                                    label="Penjelasan detail"
+                                                    defaultValue={service?.body}
                                                     placeholder="Pendekatan, cakupan pekerjaan, dan cara kerja tim."
+                                                    invalid={Boolean(
+                                                        errors.body,
+                                                    )}
                                                 />
                                             </FormField>
                                         </FieldGroup>

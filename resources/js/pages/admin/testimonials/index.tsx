@@ -54,6 +54,11 @@ const columns: ColumnDef<Testimonial>[] = [
         cell: ({ row }) => row.original.case_study?.title ?? '-',
     },
     {
+        id: 'product',
+        header: 'Produk',
+        cell: ({ row }) => row.original.product?.name ?? '-',
+    },
+    {
         accessorKey: 'sort_order',
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Urutan" />

@@ -31,7 +31,11 @@ test('admins see lead KPIs, trends and breakdowns on the dashboard', function ()
     ]);
     ConsultationRequest::factory()->create(['status' => LeadStatus::Proposal, 'problem_area' => BusinessFunction::Sales]);
     ConsultationRequest::factory()->create(['status' => LeadStatus::Won, 'problem_area' => BusinessFunction::Finance]);
-    ConsultationRequest::factory()->create(['status' => LeadStatus::Lost, 'created_at' => now()->subMonth()]);
+    ConsultationRequest::factory()->create([
+        'status' => LeadStatus::Lost,
+        'problem_area' => BusinessFunction::Other,
+        'created_at' => now()->subMonth(),
+    ]);
     CaseStudy::factory()->create();
     CaseStudy::factory()->draft()->create();
 

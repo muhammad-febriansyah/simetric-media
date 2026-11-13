@@ -66,6 +66,9 @@ class SiteSettingRequest extends FormRequest
             'remove_seo_og_image' => ['nullable', 'boolean'],
             'google_analytics_id' => ['nullable', 'string', 'regex:/^G-[A-Z0-9]{4,12}$/'],
             'google_site_verification' => ['nullable', 'string', 'max:100', 'regex:/^[A-Za-z0-9_\-]+$/'],
+
+            'expertise_page_title' => ['required', 'string', 'max:100'],
+            'expertise_page_description' => ['required', 'string', 'max:400'],
         ];
     }
 
@@ -98,6 +101,8 @@ class SiteSettingRequest extends FormRequest
             'contact_whatsapp' => 'Nomor WhatsApp',
             'contact_address' => 'Alamat singkat',
             'business_hours' => 'Jam operasional',
+            'expertise_page_title' => 'Judul halaman Keahlian',
+            'expertise_page_description' => 'Intro halaman Keahlian',
             'maps_embed_url' => 'Google Maps embed',
             'social_linkedin' => 'LinkedIn',
             'social_instagram' => 'Instagram',

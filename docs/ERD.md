@@ -31,6 +31,7 @@ erDiagram
     articles ||--o{ article_service : ""
     services ||--o{ article_service : ""
 
+    expertises ||--o{ services : "mengelompokkan"
     services ||--o{ case_study_service : ""
     case_studies ||--o{ case_study_service : ""
 
@@ -67,7 +68,7 @@ erDiagram
         bigint id PK
         string name
         string slug UK
-        string pillar
+        bigint expertise_id FK
         string headline
         text problem_statement
         longtext body
@@ -270,13 +271,17 @@ erDiagram
 | `meta_title`, `meta_description` | string(70), string(160) | ya    | SEO                                      |
 | `published_at`                   | timestamp, index        | ya    | Null berarti draft                       |
 
+### `expertises`
+
+Bidang keahlian (pilar layanan) yang dikelola di admin dan tampil di `/keahlian`. Kolom: `name`, `slug` (unik), `description` (maks 300), `icon`, `sort_order`, `published_at`, `meta_title`, `meta_description`. Relasi: `hasMany services`. Tidak bisa dihapus selama masih punya layanan (FK `restrictOnDelete`). Menggantikan enum `ServicePillar` (data lama dipindah oleh migration `create_expertises_table`).
+
 ### `services`
 
 | Kolom                            | Tipe                    | Null  | Keterangan                                                                      |
 | -------------------------------- | ----------------------- | ----- | ------------------------------------------------------------------------------- |
 | `name`                           | string(150)             | tidak |                                                                                 |
 | `slug`                           | string(170), unique     | tidak |                                                                                 |
-| `pillar`                         | string(30), index       | tidak | Enum `ServicePillar`: `consulting`, `design`, `development`, `support`          |
+| `expertise_id`                   | FK → expertises.id      | tidak | Bidang keahlian; restrict on delete                                             |
 | `headline`                       | string(200)             | ya    | Kalimat masalah yang diselesaikan                                               |
 | `problem_statement`              | text                    | ya    |                                                                                 |
 | `body`                           | longtext                | ya    | Konten detail                                                                   |
@@ -352,6 +357,22 @@ Primary key gabungan (`case_study_id`, `service_id` / `solution_id`). Kedua FK m
 ### `article_service` (pivot)
 
 Artikel insight terkait layanan, tampil di halaman detail layanan. Primary key gabungan, kedua FK `cascadeOnDelete`.
+
+### `products`
+
+Produk digital milik perusahaan (mis. LegalPartner.ID, ChatCepat, KarirConnect). Berdiri sendiri, tanpa relasi.
+
+| Kolom                             | Tipe                    | Keterangan                               |
+| --------------------------------- | ----------------------- | ---------------------------------------- |
+| `name`, `slug`                    | string(100/120)         | `slug` unik                              |
+| `category`, `tagline`             | string, null            | Label kategori dan kalimat pembuka       |
+| `summary`, `body`                 | text, null              | Ringkasan dan penjelasan detail          |
+| `website_url`                     | string, null            | Tautan ke situs produk                   |
+| `logo`, `cover_image`             | string, null            | Path di disk `public`                    |
+| `features`                        | json, null              | `[{title, description}]`, maks 12        |
+| `highlights`                      | json, null              | `[{label, value}]`, maks 4               |
+| `is_featured`                     | boolean                 | Tampil di section Produk Kami di Beranda |
+| `sort_order`, `published_at`, SEO | sama dengan `solutions` |                                          |
 
 ### `company_milestones`
 
@@ -433,7 +454,6 @@ Index gabungan: (`status`, `created_at`) untuk list admin.
 | Enum               | Nilai                                                                                                                       |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
 | `LeadStatus`       | `New`=`new`, `DiscoveryCall`=`discovery_call`, `Assessment`=`assessment`, `Proposal`=`proposal`, `Won`=`won`, `Lost`=`lost` |
-| `ServicePillar`    | `Consulting`, `Design`, `Development`, `Support`                                                                            |
 | `BusinessFunction` | `Operations`, `Sales`, `Finance`, `HumanResource`, `InformationTechnology`, `Other`                                         |
 | `CompanySize`      | `Micro`=`1-10`, `Small`=`11-50`, `Medium`=`51-200`, `Large`=`201-1000`, `Enterprise`=`1000+`                                |
 | `ProjectTimeline`  | `Asap`, `OneToThreeMonths`, `ThreeToSixMonths`, `Exploring`                                                                 |

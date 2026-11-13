@@ -80,3 +80,21 @@ test('soft deletes an article', function () {
 
     $this->assertSoftDeleted($article);
 });
+
+test('sanitizes the article body from the rich text editor', function () {
+    $this->post(route('admin.articles.store'), [
+        'title' => 'Artikel berformat',
+        'body' => '<h2>Langkah</h2><p onclick="steal()">Baca <a href="javascript:alert(1)">ini</a> dan <a href="https://contoh.id" target="_blank">itu</a>.</p><script>alert(1)</script>',
+    ])->assertSessionHasNoErrors();
+
+    expect(Article::query()->sole()->body)->toBe(
+        '<h2>Langkah</h2><p>Baca <a rel="noopener noreferrer nofollow">ini</a> dan <a href="https://contoh.id" target="_blank" rel="noopener noreferrer nofollow">itu</a>.</p>',
+    );
+});
+
+test('treats an empty rich text editor as a missing body', function () {
+    $this->post(route('admin.articles.store'), [
+        'title' => 'Artikel kosong',
+        'body' => '<p></p><p> </p>',
+    ])->assertSessionHasErrors(['body' => 'Isi artikel wajib diisi.']);
+});
