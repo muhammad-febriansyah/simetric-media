@@ -1,0 +1,76 @@
+# Production stack for simetricdigital.com.
+#
+# Usage on the server (inside the project directory, next to the .env file):
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# The host Nginx terminates HTTPS and proxies to 127.0.0.1:${APP_PORT}.
+
+name: simetric-media
+
+x-app: &app
+  build:
+    context: .
+    target: app
+  image: simetric-media-app:latest
+  env_file: ${ENV_FILE:-.env}
+  restart: unless-stopped
+  volumes:
+    - storage:/var/www/html/storage
+  depends_on:
+    db:
+      condition: service_healthy
+  networks:
+    - internal
+
+services:
+  app:
+    <<: *app
+    environment:
+      RUN_MIGRATIONS: "true"
+
+  queue:
+    <<: *app
+    command: ["su-exec", "www-data", "php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
+    depends_on:
+      app:
+        condition: service_started
+
+  web:
+    build:
+      context: .
+      target: web
+    image: simetric-media-web:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:80"
+    volumes:
+      - storage:/var/www/html/storage:ro
+    depends_on:
+      - app
+    networks:
+      - internal
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+volumes:
+  storage:
+  mysql:
+
+networks:
+  internal:
