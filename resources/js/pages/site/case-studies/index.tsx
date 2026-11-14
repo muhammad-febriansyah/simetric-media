@@ -1,22 +1,11 @@
 import { Head, Link, router } from '@inertiajs/react';
-import {
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    FilterXIcon,
-    FolderSearchIcon,
-} from 'lucide-react';
+import { FilterXIcon, FolderSearchIcon } from 'lucide-react';
 import { OptionSelect } from '@/components/admin/option-select';
 import { CaseStudyCard } from '@/components/site/case-study-card';
+import { FilterPills } from '@/components/site/filter-pills';
+import { SiteEmpty } from '@/components/site/site-empty';
+import { SitePagination } from '@/components/site/site-pagination';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-    Empty,
-    EmptyContent,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
 import { home } from '@/routes';
 import { index } from '@/routes/case-studies';
 import { create as consultationCreate } from '@/routes/consultation';
@@ -63,30 +52,34 @@ export default function CaseStudyIndex({
         <>
             <Head title="Studi Kasus" />
 
-            <Card>
-                <CardContent className="flex flex-col gap-4 md:flex-row md:items-end">
-                    <div className="grid flex-1 gap-4 sm:grid-cols-2">
-                        <label className="flex flex-col gap-2 text-sm font-medium">
-                            Industri
-                            <FilterSelect
-                                id="filter-industry"
-                                value={filters.industry}
-                                options={industryOptions}
-                                allLabel="Semua industri"
-                                onChange={(industry) => visit({ industry })}
-                            />
-                        </label>
-                        <label className="flex flex-col gap-2 text-sm font-medium">
-                            Layanan
-                            <FilterSelect
-                                id="filter-service"
-                                value={filters.service}
-                                options={serviceOptions}
-                                allLabel="Semua layanan"
-                                onChange={(service) => visit({ service })}
-                            />
-                        </label>
-                    </div>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <FilterPills
+                    label="Filter industri"
+                    allLabel="Semua industri"
+                    options={industryOptions}
+                    value={filters.industry}
+                    onChange={(industry) => visit({ industry })}
+                />
+                <div className="flex items-center gap-2 lg:w-72">
+                    <label htmlFor="filter-service" className="sr-only">
+                        Layanan
+                    </label>
+                    <FilterSelect
+                        id="filter-service"
+                        value={filters.service}
+                        options={serviceOptions}
+                        allLabel="Semua layanan"
+                        onChange={(service) => visit({ service })}
+                    />
+                </div>
+            </div>
+
+            {caseStudies.data.length === 0 ? (
+                <SiteEmpty
+                    icon={FolderSearchIcon}
+                    title="Studi kasus tidak ditemukan"
+                    description="Coba ubah filter industri atau layanan."
+                >
                     {hasFilters && (
                         <Button
                             variant="secondary"
@@ -96,40 +89,7 @@ export default function CaseStudyIndex({
                             Hapus filter
                         </Button>
                     )}
-                </CardContent>
-            </Card>
-
-            {caseStudies.data.length === 0 ? (
-                <Card>
-                    <CardContent>
-                        <Empty>
-                            <EmptyHeader>
-                                <EmptyMedia variant="icon">
-                                    <FolderSearchIcon />
-                                </EmptyMedia>
-                                <EmptyTitle>
-                                    Studi kasus tidak ditemukan
-                                </EmptyTitle>
-                                <EmptyDescription>
-                                    Coba ubah filter industri atau layanan.
-                                </EmptyDescription>
-                            </EmptyHeader>
-                            {hasFilters && (
-                                <EmptyContent>
-                                    <Button
-                                        variant="secondary"
-                                        onClick={() =>
-                                            visit({ industry: '', service: '' })
-                                        }
-                                    >
-                                        <FilterXIcon data-icon="inline-start" />
-                                        Hapus filter
-                                    </Button>
-                                </EmptyContent>
-                            )}
-                        </Empty>
-                    </CardContent>
-                </Card>
+                </SiteEmpty>
             ) : (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {caseStudies.data.map((caseStudy) => (
@@ -141,29 +101,11 @@ export default function CaseStudyIndex({
                 </div>
             )}
 
-            {lastPage > 1 && (
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                    <Button
-                        variant="secondary"
-                        disabled={currentPage <= 1}
-                        onClick={() => visit({ page: currentPage - 1 })}
-                    >
-                        <ChevronLeftIcon data-icon="inline-start" />
-                        Sebelumnya
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-                        Halaman {currentPage} dari {lastPage}
-                    </span>
-                    <Button
-                        variant="secondary"
-                        disabled={currentPage >= lastPage}
-                        onClick={() => visit({ page: currentPage + 1 })}
-                    >
-                        Berikutnya
-                        <ChevronRightIcon data-icon="inline-end" />
-                    </Button>
-                </div>
-            )}
+            <SitePagination
+                currentPage={currentPage}
+                lastPage={lastPage}
+                onPageChange={(page) => visit({ page })}
+            />
 
             <p className="text-center text-sm text-muted-foreground">
                 Punya tantangan serupa?{' '}
@@ -213,6 +155,7 @@ CaseStudyIndex.layout = {
         { title: 'Beranda', href: home() },
         { title: 'Studi Kasus', href: index() },
     ],
+    eyebrow: 'Bukti nyata',
     title: 'Studi Kasus',
     description:
         'Perjalanan konsultasi nyata: dari tantangan, temuan assessment, rekomendasi, sampai hasil yang terukur.',

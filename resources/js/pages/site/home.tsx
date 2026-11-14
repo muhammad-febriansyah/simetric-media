@@ -6,41 +6,45 @@ import {
     HandshakeIcon,
     MessagesSquareIcon,
     PackageCheckIcon,
-    QuoteIcon,
     RouteIcon,
 } from 'lucide-react';
 import { CaseStudyCard } from '@/components/site/case-study-card';
 import { ContentIcon } from '@/components/site/content-icon';
+import { FaqList } from '@/components/site/faq-list';
+import { IntegrationDiagram } from '@/components/site/integration-diagram';
 import { ProductCard } from '@/components/site/product-card';
+import { ProjectJourney } from '@/components/site/project-journey';
 import { SectionHeading } from '@/components/site/section-heading';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { BlurFade } from '@/components/ui/blur-fade';
-import { BorderBeam } from '@/components/ui/border-beam';
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { DotPattern } from '@/components/ui/dot-pattern';
 import { Marquee } from '@/components/ui/marquee';
 import { NumberTicker } from '@/components/ui/number-ticker';
-import { Safari } from '@/components/ui/safari';
-import ShinyText from '@/components/ui/shiny-text';
 import { Timeline } from '@/components/ui/timeline';
+import { WordRotate } from '@/components/ui/word-rotate';
 import { cn } from '@/lib/utils';
 import { howWeWork } from '@/routes';
 import { index as caseStudiesIndex } from '@/routes/case-studies';
 import { create as consultationCreate } from '@/routes/consultation';
 import { index as expertisesIndex } from '@/routes/expertises';
 import { show as showIndustry } from '@/routes/industries';
-import { index as productsIndex, show as showProduct } from '@/routes/products';
+import { index as productsIndex } from '@/routes/products';
 import type {
     CaseStudy,
     ClientLogo,
     Expertise,
+    Faq,
     Industry,
     ProcessStep,
     Product,
     Testimonial,
 } from '@/types';
+import type { HoverEffectItem } from '@/components/ui/card-hover-effect';
 
 type Stats = {
     caseStudies: number;
@@ -58,6 +62,7 @@ type Props = {
     products: Product[];
     clientLogos: ClientLogo[];
     testimonials: Testimonial[];
+    faqs: Faq[];
 };
 
 const differentiators = [
@@ -81,6 +86,12 @@ const differentiators = [
     },
 ];
 
+const integrationPoints = [
+    'Tanpa harus mengganti sistem yang sudah dipakai',
+    'Data dimasukkan sekali, dipakai di semua bagian',
+    'Laporan manajemen terbarui otomatis',
+];
+
 const SECTION =
     'mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-14 md:px-6';
 
@@ -92,6 +103,50 @@ function initials(name: string): string {
         .join('');
 }
 
+function ReviewCard({
+    testimonial,
+    className = 'w-72 md:w-80',
+}: {
+    testimonial: Testimonial;
+    className?: string;
+}) {
+    return (
+        <figure
+            className={cn(
+                'flex flex-col gap-3 rounded-2xl bg-card p-5 text-foreground',
+                className,
+            )}
+        >
+            <div className="flex items-center gap-3">
+                <Avatar className="size-9">
+                    {testimonial.photo_url && (
+                        <AvatarImage
+                            src={testimonial.photo_url}
+                            alt={testimonial.author_name}
+                        />
+                    )}
+                    <AvatarFallback className="bg-accent text-xs font-semibold text-accent-foreground">
+                        {initials(testimonial.author_name)}
+                    </AvatarFallback>
+                </Avatar>
+                <figcaption className="flex min-w-0 flex-col">
+                    <span className="truncate text-sm font-semibold">
+                        {testimonial.author_name}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                        {[testimonial.author_position, testimonial.company]
+                            .filter(Boolean)
+                            .join(', ')}
+                    </span>
+                </figcaption>
+            </div>
+            <blockquote className="line-clamp-4 text-sm leading-relaxed text-foreground/90">
+                {testimonial.quote}
+            </blockquote>
+        </figure>
+    );
+}
+
 export default function Home({
     process,
     stats,
@@ -101,8 +156,38 @@ export default function Home({
     products,
     clientLogos,
     testimonials,
+    faqs,
 }: Props) {
-    const heroProduct = products.find((product) => product.cover_image_url);
+    const heroIndustries =
+        industries.length > 0
+            ? industries.map((industry) => industry.name)
+            : ['industri'];
+    const [firstTestimonialRow, secondTestimonialRow] = [
+        testimonials.slice(0, Math.ceil(testimonials.length / 2)),
+        testimonials.slice(Math.ceil(testimonials.length / 2)),
+    ];
+    const industryItems: HoverEffectItem[] = industries.map((industry) => ({
+        key: industry.id,
+        href: showIndustry(industry.slug),
+        content: (
+            <div className="flex items-center gap-4">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                    <ContentIcon iconName={industry.icon} />
+                </span>
+                <div className="flex min-w-0 flex-col gap-0.5">
+                    <span className="font-semibold group-hover:text-primary">
+                        {industry.name}
+                    </span>
+                    {industry.pain_points[0] && (
+                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <CheckCircle2Icon className="size-3.5 shrink-0 text-success" />
+                            {industry.pain_points[0]}
+                        </span>
+                    )}
+                </div>
+            </div>
+        ),
+    }));
     const statItems = [
         { label: 'Studi kasus terdokumentasi', value: stats.caseStudies },
         { label: 'Produk digital milik kami', value: stats.products },
@@ -124,26 +209,35 @@ export default function Home({
             {/* Hero */}
             <section className="relative isolate overflow-hidden">
                 <DotPattern className="-z-10 [mask-image:radial-gradient(ellipse_at_top,white_20%,transparent_70%)]" />
-                <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 py-14 md:px-6 lg:grid-cols-2 lg:py-20">
+                <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 py-14 md:px-6 lg:grid-cols-[1.25fr_1fr] lg:py-20">
                     <div className="flex flex-col items-start gap-6">
                         <BlurFade delay={0.05}>
-                            <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-4 py-1.5 text-sm font-semibold shadow-sm">
-                                <span className="size-2 rounded-full bg-success" />
-                                <ShinyText
-                                    text="Konsultan teknologi A–Z untuk industri"
-                                    color="#2547F9"
-                                    shineColor="#9DB1FF"
-                                    speed={3}
+                            <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-4 py-1.5 text-sm font-medium shadow-sm">
+                                <span className="size-2 shrink-0 rounded-full bg-success" />
+                                <span className="text-muted-foreground">
+                                    Konsultan{' '}
+                                    <span className="hidden sm:inline">
+                                        teknologi{' '}
+                                    </span>
+                                    A–Z untuk
+                                </span>
+                                <WordRotate
+                                    words={heroIndustries}
+                                    className="font-semibold text-primary"
                                 />
                             </span>
                         </BlurFade>
                         <BlurFade delay={0.15}>
-                            <h1 className="text-4xl leading-tight font-bold text-balance md:text-5xl lg:text-[3.4rem]">
+                            <h1 className="text-4xl leading-tight font-bold tracking-tight md:text-5xl">
                                 Dari masalah bisnis sampai{' '}
                                 <span className="text-primary">
                                     solusi aplikasi
                                 </span>{' '}
-                                yang benar-benar berjalan.
+                                yang{' '}
+                                <span className="whitespace-nowrap">
+                                    benar-benar
+                                </span>{' '}
+                                berjalan.
                             </h1>
                         </BlurFade>
                         <BlurFade delay={0.25}>
@@ -173,111 +267,75 @@ export default function Home({
                     </div>
 
                     <BlurFade delay={0.3} direction="left">
-                        {heroProduct ? (
-                            <Link
-                                href={showProduct(heroProduct.slug)}
-                                className="group relative block rounded-2xl"
-                                aria-label={`Lihat produk ${heroProduct.name}`}
-                            >
-                                <Safari
-                                    url={
-                                        heroProduct.website_url
-                                            ? new URL(heroProduct.website_url)
-                                                  .hostname
-                                            : heroProduct.slug
-                                    }
-                                    imageSrc={
-                                        heroProduct.cover_image_url ?? undefined
-                                    }
-                                    className="drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-1"
-                                />
-                                <span className="absolute -bottom-5 left-6 flex items-center gap-3 rounded-2xl bg-card px-4 py-3 text-sm shadow-lg ring-1 ring-border">
-                                    <PackageCheckIcon className="size-5 text-success" />
-                                    <span className="flex flex-col">
-                                        <span className="font-semibold">
-                                            {heroProduct.name}
-                                        </span>
-                                        <span className="text-xs text-muted-foreground">
-                                            Dibangun & dijalankan tim kami
-                                        </span>
-                                    </span>
-                                </span>
-                            </Link>
-                        ) : (
-                            <Card className="gap-4 p-6 md:p-8">
-                                {process.slice(0, 4).map((step, position) => (
-                                    <div
-                                        key={step.title}
-                                        className="flex items-start gap-4 rounded-xl bg-muted p-4"
-                                    >
-                                        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                                            {position + 1}
-                                        </span>
-                                        <span className="font-semibold">
-                                            {step.title}
-                                        </span>
-                                    </div>
-                                ))}
-                            </Card>
-                        )}
+                        <ProjectJourney steps={process} />
                     </BlurFade>
                 </div>
             </section>
 
-            {/* Client & partner logos */}
+            {/* Client & partner logos (Magic UI Marquee) */}
             {clientLogos.length > 0 && (
                 <section
                     aria-label="Klien dan mitra"
-                    className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 md:px-6"
+                    className="mx-auto flex w-full max-w-7xl flex-col items-center gap-8 px-4 py-12 md:px-6"
                 >
-                    <p className="text-center text-sm font-medium text-muted-foreground">
-                        Dipercaya bisnis yang memakai layanan & produk kami
-                    </p>
-                    <div className="relative flex flex-col gap-2 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+                    <div className="flex flex-col items-center gap-3 text-center">
+                        <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+                            Klien & mitra
+                        </span>
+                        <h2 className="max-w-xl text-xl leading-snug font-bold text-balance md:text-2xl">
+                            Dipercaya bisnis yang memakai layanan dan produk
+                            kami
+                        </h2>
+                    </div>
+                    <div className="relative flex w-full flex-col gap-3 overflow-hidden">
                         {logoRows.map((row, rowIndex) => (
                             <Marquee
                                 key={rowIndex}
                                 pauseOnHover
                                 reverse={rowIndex % 2 === 1}
-                                className="[--duration:45s] [--gap:1rem]"
+                                className="[--duration:50s] [--gap:1rem]"
                             >
                                 {row.map((clientLogo) => (
                                     <div
                                         key={clientLogo.id}
-                                        className="flex h-16 w-40 items-center justify-center rounded-xl bg-card px-4 ring-1 ring-border"
+                                        className="site-card flex h-16 w-40 items-center justify-center px-5"
                                     >
                                         <img
                                             src={clientLogo.logo_url}
                                             alt={clientLogo.name}
                                             title={clientLogo.name}
                                             loading="lazy"
-                                            className="max-h-10 w-full object-contain opacity-70 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+                                            className="max-h-9 w-full object-contain"
                                         />
                                     </div>
                                 ))}
                             </Marquee>
                         ))}
+                        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-background" />
+                        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-background" />
                     </div>
                 </section>
             )}
 
-            {/* Numbers */}
+            {/* Numbers (Magic UI Number Ticker) */}
             {statItems.length > 0 && (
-                <section className="mx-auto grid w-full max-w-7xl gap-4 px-4 py-6 sm:grid-cols-2 md:px-6 lg:grid-cols-4">
-                    {statItems.map((item, index) => (
-                        <BlurFade key={item.label} delay={0.05 * index} inView>
-                            <Card className="h-full">
-                                <CardContent className="flex flex-col gap-1">
-                                    <span className="text-4xl font-bold text-primary">
-                                        <NumberTicker value={item.value} />+
-                                    </span>
-                                    <span className="text-sm text-muted-foreground">
-                                        {item.label}
-                                    </span>
-                                </CardContent>
-                            </Card>
-                        </BlurFade>
-                    ))}
+                <section className="mx-auto w-full max-w-7xl px-4 md:px-6">
+                    <dl className="grid grid-cols-2 gap-y-8 border-y py-10 lg:auto-cols-fr lg:grid-flow-col lg:grid-cols-none">
+                        {statItems.map((item) => (
+                            <div
+                                key={item.label}
+                                className="flex flex-col-reverse gap-1 px-4 lg:border-l lg:px-8 lg:first:border-l-0 lg:first:pl-0"
+                            >
+                                <dt className="text-sm text-muted-foreground">
+                                    {item.label}
+                                </dt>
+                                <dd className="text-4xl font-semibold tracking-tighter md:text-5xl">
+                                    <NumberTicker value={item.value} />
+                                    <span className="text-primary">+</span>
+                                </dd>
+                            </div>
+                        ))}
+                    </dl>
                 </section>
             )}
 
@@ -290,26 +348,29 @@ export default function Home({
                 />
                 <div className="grid gap-6 md:grid-cols-3">
                     {differentiators.map((item, index) => (
-                        <BlurFade key={item.title} delay={0.08 * index} inView>
-                            <Card className="h-full">
-                                <CardContent className="flex flex-col gap-4">
-                                    <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                                        <item.icon />
-                                    </span>
-                                    <h3 className="text-lg font-semibold">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        {item.description}
-                                    </p>
-                                </CardContent>
-                            </Card>
+                        <BlurFade
+                            key={item.title}
+                            delay={0.08 * index}
+                            inView
+                            className="flex"
+                        >
+                            <div className="site-card flex w-full flex-col gap-4 p-6">
+                                <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                                    <item.icon />
+                                </span>
+                                <h3 className="text-lg font-semibold">
+                                    {item.title}
+                                </h3>
+                                <p className="text-sm leading-relaxed text-muted-foreground">
+                                    {item.description}
+                                </p>
+                            </div>
                         </BlurFade>
                     ))}
                 </div>
             </section>
 
-            {/* Expertise bento */}
+            {/* Expertise (Magic UI Bento Grid) */}
             {expertises.length > 0 && (
                 <section className={SECTION}>
                     <SectionHeading
@@ -324,60 +385,70 @@ export default function Home({
                             </Button>
                         }
                     />
-                    <div className="grid auto-rows-fr gap-4 md:grid-cols-3">
+                    <BentoGrid>
                         {expertises.map((expertise, index) => (
-                            <BlurFade
+                            <BentoCard
                                 key={expertise.id}
-                                delay={0.06 * index}
-                                inView
-                                className={cn(
+                                name={expertise.name}
+                                description={expertise.description}
+                                icon={<ContentIcon iconName={expertise.icon} />}
+                                href={`${expertisesIndex.url()}#${expertise.slug}`}
+                                cta={`Lihat ${expertise.services_count ?? 0} layanan`}
+                                className={
                                     index % 4 === 0 || index % 4 === 3
-                                        ? 'md:col-span-2'
-                                        : 'md:col-span-1',
-                                )}
-                            >
-                                <Link
-                                    href={`${expertisesIndex.url()}#${expertise.slug}`}
-                                    className="group relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-card p-6 transition-shadow hover:shadow-lg"
-                                >
-                                    <DotPattern className="[mask-image:radial-gradient(circle_at_top_right,white,transparent_60%)] text-primary/10" />
-                                    <div className="relative flex flex-col gap-3">
-                                        <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                                            <ContentIcon
-                                                iconName={expertise.icon}
-                                            />
-                                        </span>
-                                        <h3 className="text-xl font-semibold group-hover:text-primary">
-                                            {expertise.name}
-                                        </h3>
-                                        {expertise.description && (
-                                            <p className="text-sm text-muted-foreground">
-                                                {expertise.description}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div className="relative flex flex-wrap items-center gap-2">
-                                        {(expertise.services ?? [])
-                                            .slice(0, 3)
-                                            .map((service) => (
+                                        ? 'lg:col-span-2'
+                                        : 'lg:col-span-1'
+                                }
+                                background={
+                                    <div className="flex flex-wrap content-start gap-2 [mask-image:linear-gradient(to_bottom,black_30%,transparent_75%)] p-6">
+                                        {(expertise.services ?? []).map(
+                                            (service) => (
                                                 <Badge
                                                     key={service.id}
                                                     variant="secondary"
                                                 >
                                                     {service.name}
                                                 </Badge>
-                                            ))}
-                                        <span className="ml-auto flex items-center gap-1.5 text-sm font-semibold text-primary">
-                                            {expertise.services_count} layanan
-                                            <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
-                                        </span>
+                                            ),
+                                        )}
                                     </div>
-                                </Link>
-                            </BlurFade>
+                                }
+                            />
                         ))}
-                    </div>
+                    </BentoGrid>
                 </section>
             )}
+
+            {/* System integration (Magic UI Animated Beam) */}
+            <section className={SECTION}>
+                <div className="grid items-center gap-10 lg:grid-cols-2">
+                    <div className="flex flex-col gap-6">
+                        <SectionHeading
+                            eyebrow="Integrasi sistem"
+                            title="Data yang tersebar, kami satukan dalam satu alur"
+                            description="Banyak perusahaan sudah memakai spreadsheet, WhatsApp, dan software akuntansi. Kami tidak selalu menggantinya. Kami menghubungkannya supaya laporan berjalan otomatis."
+                        />
+                        <ul className="flex flex-col gap-3">
+                            {integrationPoints.map((point) => (
+                                <li
+                                    key={point}
+                                    className="flex items-start gap-3 text-sm"
+                                >
+                                    <CheckCircle2Icon className="mt-0.5 size-4 shrink-0 text-success" />
+                                    {point}
+                                </li>
+                            ))}
+                        </ul>
+                        <Button variant="secondary" asChild className="w-fit">
+                            <Link href={consultationCreate()}>
+                                <MessagesSquareIcon data-icon="inline-start" />
+                                Diskusikan sistem Anda
+                            </Link>
+                        </Button>
+                    </div>
+                    <IntegrationDiagram />
+                </div>
+            </section>
 
             {/* Process timeline */}
             <section className={SECTION}>
@@ -476,120 +547,94 @@ export default function Home({
                                 key={product.id}
                                 delay={0.08 * index}
                                 inView
-                                className="relative flex overflow-hidden rounded-2xl"
+                                className="flex"
                             >
                                 <ProductCard product={product} />
-                                {index === 0 && (
-                                    <BorderBeam
-                                        size={120}
-                                        duration={8}
-                                        colorFrom="#2547F9"
-                                        colorTo="#47BB8E"
-                                        className="rounded-2xl"
-                                    />
-                                )}
                             </BlurFade>
                         ))}
                     </div>
                 </section>
             )}
 
-            {/* Testimonials */}
+            {/* Testimonials on a navy band (Magic UI Marquee) */}
             {testimonials.length > 0 && (
-                <section className="flex w-full flex-col gap-10 py-14">
-                    <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-                        <SectionHeading
-                            eyebrow="Testimoni"
-                            title="Kata mereka yang sudah bekerja bersama kami"
-                        />
-                    </div>
-                    <div className="relative [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-                        <Marquee
-                            pauseOnHover
-                            className="[--duration:70s] [--gap:1.25rem]"
-                        >
-                            {testimonials.map((testimonial) => (
-                                <figure
-                                    key={testimonial.id}
-                                    className="flex w-80 flex-col gap-4 rounded-2xl bg-card p-6 md:w-96"
-                                >
-                                    <QuoteIcon className="size-6 text-primary/40" />
-                                    <blockquote className="flex-1 text-sm leading-relaxed">
-                                        {testimonial.quote}
-                                    </blockquote>
-                                    <figcaption className="flex items-center gap-3">
-                                        <Avatar className="size-10">
-                                            {testimonial.photo_url && (
-                                                <AvatarImage
-                                                    src={testimonial.photo_url}
-                                                    alt={
-                                                        testimonial.author_name
-                                                    }
-                                                />
-                                            )}
-                                            <AvatarFallback className="bg-accent text-xs font-semibold text-accent-foreground">
-                                                {initials(
-                                                    testimonial.author_name,
-                                                )}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <span className="flex flex-col">
-                                            <span className="text-sm font-semibold">
-                                                {testimonial.author_name}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground">
-                                                {[
-                                                    testimonial.author_position,
-                                                    testimonial.company,
-                                                ]
-                                                    .filter(Boolean)
-                                                    .join(', ')}
-                                            </span>
-                                        </span>
-                                    </figcaption>
-                                </figure>
-                            ))}
-                        </Marquee>
+                <section className="bg-navy text-navy-foreground">
+                    <div className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 py-16 md:px-6 md:py-20 lg:grid-cols-[1fr_1.2fr]">
+                        <div className="flex flex-col items-start gap-6">
+                            <SectionHeading
+                                onDark
+                                eyebrow="Testimoni"
+                                title="Kata mereka yang sudah bekerja bersama kami"
+                                description="Cerita langsung dari klien dan pengguna produk yang kami bangun dan jalankan."
+                            />
+                            <Button size="lg" asChild>
+                                <Link href={consultationCreate()}>
+                                    <MessagesSquareIcon data-icon="inline-start" />
+                                    Mulai konsultasi
+                                </Link>
+                            </Button>
+                        </div>
+
+                        <div className="relative hidden h-[34rem] grid-cols-2 gap-4 overflow-hidden lg:grid">
+                            {[firstTestimonialRow, secondTestimonialRow].map(
+                                (column, columnIndex) => (
+                                    <Marquee
+                                        key={columnIndex}
+                                        vertical
+                                        pauseOnHover
+                                        reverse={columnIndex === 1}
+                                        className="h-full [--duration:40s]"
+                                    >
+                                        {column.map((testimonial) => (
+                                            <ReviewCard
+                                                key={testimonial.id}
+                                                testimonial={testimonial}
+                                                className="w-full"
+                                            />
+                                        ))}
+                                    </Marquee>
+                                ),
+                            )}
+                            <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-navy" />
+                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-navy" />
+                        </div>
+
+                        <div className="relative -mx-4 overflow-hidden md:-mx-6 lg:hidden">
+                            <Marquee pauseOnHover className="[--duration:45s]">
+                                {testimonials.map((testimonial) => (
+                                    <ReviewCard
+                                        key={testimonial.id}
+                                        testimonial={testimonial}
+                                    />
+                                ))}
+                            </Marquee>
+                            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-navy" />
+                            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-navy" />
+                        </div>
                     </div>
                 </section>
             )}
 
-            {/* Industries */}
+            {/* Industries (Aceternity Card Hover Effect) */}
             {industries.length > 0 && (
                 <section className={SECTION}>
                     <SectionHeading
                         eyebrow="Industri"
                         title="Kami memahami tantangan di industri Anda"
                     />
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {industries.map((industry, index) => (
-                            <BlurFade
-                                key={industry.id}
-                                delay={0.03 * (index % 6)}
-                                inView
-                            >
-                                <Link
-                                    href={showIndustry(industry.slug)}
-                                    className="group flex h-full items-center gap-4 rounded-2xl bg-card p-5 transition-shadow hover:shadow-lg"
-                                >
-                                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                                        <ContentIcon iconName={industry.icon} />
-                                    </span>
-                                    <div className="flex flex-col">
-                                        <span className="font-semibold group-hover:text-primary">
-                                            {industry.name}
-                                        </span>
-                                        {industry.pain_points[0] && (
-                                            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                                <CheckCircle2Icon className="size-3.5 shrink-0 text-success" />
-                                                {industry.pain_points[0]}
-                                            </span>
-                                        )}
-                                    </div>
-                                </Link>
-                            </BlurFade>
-                        ))}
-                    </div>
+                    <HoverEffect items={industryItems} className="-m-2" />
+                </section>
+            )}
+
+            {/* FAQ */}
+            {faqs.length > 0 && (
+                <section className={SECTION}>
+                    <SectionHeading
+                        align="center"
+                        eyebrow="Tanya jawab"
+                        title="Pertanyaan yang sering diajukan"
+                    />
+                    <FaqList faqs={faqs} />
                 </section>
             )}
         </>

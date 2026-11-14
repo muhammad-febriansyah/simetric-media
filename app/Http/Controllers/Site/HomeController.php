@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CaseStudyResource;
 use App\Http\Resources\ClientLogoResource;
 use App\Http\Resources\ExpertiseResource;
+use App\Http\Resources\FaqResource;
 use App\Http\Resources\IndustryResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\TestimonialResource;
 use App\Models\CaseStudy;
 use App\Models\ClientLogo;
 use App\Models\Expertise;
+use App\Models\Faq;
 use App\Models\Industry;
 use App\Models\Product;
 use App\Models\Testimonial;
@@ -60,6 +62,9 @@ class HomeController extends Controller
             )->resolve(),
             'testimonials' => TestimonialResource::collection(
                 Testimonial::query()->where('is_active', true)->orderBy('sort_order')->limit(12)->get(),
+            )->resolve(),
+            'faqs' => FaqResource::collection(
+                Faq::query()->where('page', 'home')->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get(),
             )->resolve(),
         ]);
     }

@@ -383,8 +383,8 @@ class DemoContentSeeder extends Seeder
                 : ['page' => null, 'faqable_type' => 'service', 'faqable_id' => $services[$target]->id];
 
             Faq::query()->updateOrCreate(
-                ['question' => $question],
-                [...$placement, 'answer' => $answer, 'sort_order' => $index, 'is_active' => true],
+                [...$placement, 'question' => $question],
+                ['answer' => $answer, 'sort_order' => $index, 'is_active' => true],
             );
         }
     }

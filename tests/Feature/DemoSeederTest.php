@@ -28,13 +28,16 @@ test('seeds 20 demo records per menu with stored images', function () {
     $this->seed(DatabaseSeeder::class);
     $this->seed(DemoSeeder::class);
 
-    foreach ([Industry::class, Service::class, Faq::class, Article::class, TeamMember::class,
+    foreach ([Industry::class, Service::class, Article::class, TeamMember::class,
         CompanyMilestone::class, Office::class, ConsultationRequest::class] as $model) {
         expect($model::query()->count())->toBe(20, $model);
     }
 
-    // Real product partners and testimonials from ProductSeeder come on top of the 20 demo records.
-    expect(Testimonial::query()->whereNull('product_id')->count())->toBe(20)
+    // Starter home page FAQs (HomeFaqSeeder) and real product partners and testimonials
+    // (ProductSeeder) come on top of the 20 demo records.
+    expect(Faq::query()->where(fn ($query) => $query->whereNull('page')->orWhere('page', '!=', 'home'))->count())->toBe(20)
+        ->and(Faq::query()->where('page', 'home')->count())->toBe(6)
+        ->and(Testimonial::query()->whereNull('product_id')->count())->toBe(20)
         ->and(ClientLogo::query()->whereNull('product_id')->count())->toBe(20)
         ->and(Solution::query()->count())->toBeGreaterThanOrEqual(20)
         ->and(CaseStudy::query()->count())->toBeGreaterThanOrEqual(20)

@@ -1,8 +1,8 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
+    ArrowRightIcon,
     Building2Icon,
     CalendarRangeIcon,
-    CheckCircle2Icon,
     FolderKanbanIcon,
     LandmarkIcon,
     LightbulbIcon,
@@ -12,19 +12,15 @@ import {
     WrenchIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { PageHeader } from '@/components/page-header';
+import { SitePageHeader } from '@/components/site/site-page-header';
 import { RichText } from '@/components/rich-text';
 import { CaseStudyCard } from '@/components/site/case-study-card';
+import { DetailSection } from '@/components/site/detail-section';
 import { Badge } from '@/components/ui/badge';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { home } from '@/routes';
 import { index, show } from '@/routes/case-studies';
+import { create as consultationCreate } from '@/routes/consultation';
 import type { CaseStudy } from '@/types';
 
 type Props = {
@@ -94,18 +90,41 @@ export default function CaseStudyShow({
                 ) : null}
             </Head>
 
-            <PageHeader
+            <SitePageHeader
                 breadcrumbs={[
                     { title: 'Beranda', href: home() },
                     { title: 'Studi Kasus', href: index() },
                     { title: caseStudy.title, href: show(caseStudy.slug) },
                 ]}
+                eyebrow={
+                    caseStudy.industry
+                        ? `Studi kasus · ${caseStudy.industry.name}`
+                        : 'Studi kasus'
+                }
                 title={caseStudy.title}
                 description={caseStudy.excerpt ?? undefined}
             />
 
-            <div className="grid items-start gap-6 lg:grid-cols-3">
-                <Card className="gap-0 overflow-hidden py-0 lg:col-span-2">
+            {caseStudy.results.length > 0 && (
+                <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {caseStudy.results.map((result) => (
+                        <div
+                            key={result.label}
+                            className="site-card flex flex-col-reverse gap-1 p-6"
+                        >
+                            <dt className="text-sm text-muted-foreground">
+                                {result.label}
+                            </dt>
+                            <dd className="text-3xl leading-tight font-bold text-primary">
+                                {result.value}
+                            </dd>
+                        </div>
+                    ))}
+                </dl>
+            )}
+
+            <div className="grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
+                <div className="site-card overflow-hidden">
                     {caseStudy.cover_image_url ? (
                         <img
                             src={caseStudy.cover_image_url}
@@ -117,101 +136,83 @@ export default function CaseStudyShow({
                             <FolderKanbanIcon className="size-14" />
                         </div>
                     )}
-                </Card>
+                </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Ringkasan proyek</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-5">
+                <aside className="site-card flex flex-col gap-5 p-6 lg:sticky lg:top-28">
+                    <h2 className="text-lg font-bold">Ringkasan proyek</h2>
+                    <MetaItem
+                        icon={Building2Icon}
+                        label="Klien"
+                        value={caseStudy.client_name}
+                    />
+                    {caseStudy.industry && (
                         <MetaItem
-                            icon={Building2Icon}
-                            label="Klien"
-                            value={caseStudy.client_name}
+                            icon={FolderKanbanIcon}
+                            label="Industri"
+                            value={caseStudy.industry.name}
                         />
-                        {caseStudy.industry && (
-                            <MetaItem
-                                icon={FolderKanbanIcon}
-                                label="Industri"
-                                value={caseStudy.industry.name}
-                            />
-                        )}
-                        {caseStudy.organization_type && (
-                            <MetaItem
-                                icon={LandmarkIcon}
-                                label="Tipe organisasi"
-                                value={caseStudy.organization_type.label}
-                            />
-                        )}
-                        {caseStudy.project_period && (
-                            <MetaItem
-                                icon={CalendarRangeIcon}
-                                label="Periode"
-                                value={caseStudy.project_period}
-                            />
-                        )}
-                        {caseStudy.services &&
-                            caseStudy.services.length > 0 && (
-                                <div className="flex flex-wrap gap-2">
-                                    {caseStudy.services.map((service) => (
-                                        <Badge
-                                            key={service.id}
-                                            variant="secondary"
-                                        >
-                                            {service.name}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            )}
-                    </CardContent>
-                </Card>
+                    )}
+                    {caseStudy.organization_type && (
+                        <MetaItem
+                            icon={LandmarkIcon}
+                            label="Tipe organisasi"
+                            value={caseStudy.organization_type.label}
+                        />
+                    )}
+                    {caseStudy.project_period && (
+                        <MetaItem
+                            icon={CalendarRangeIcon}
+                            label="Periode"
+                            value={caseStudy.project_period}
+                        />
+                    )}
+                    {caseStudy.services && caseStudy.services.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {caseStudy.services.map((service) => (
+                                <Badge key={service.id} variant="secondary">
+                                    {service.name}
+                                </Badge>
+                            ))}
+                        </div>
+                    )}
+                    <div className="flex flex-col gap-3 border-t border-dashed pt-5">
+                        <span className="text-sm font-semibold">
+                            Punya tantangan serupa?
+                        </span>
+                        <Button asChild>
+                            <Link href={consultationCreate()}>
+                                Konsultasi Gratis
+                                <ArrowRightIcon data-icon="inline-end" />
+                            </Link>
+                        </Button>
+                    </div>
+                </aside>
             </div>
 
-            {caseStudy.results.length > 0 && (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {caseStudy.results.map((result) => (
-                        <Card key={result.label}>
-                            <CardContent className="flex flex-col gap-1">
-                                <span className="text-2xl leading-tight font-bold text-primary md:text-3xl">
-                                    {result.value}
-                                </span>
-                                <span className="text-sm text-muted-foreground">
-                                    {result.label}
-                                </span>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            )}
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Perjalanan konsultasi</CardTitle>
-                    <CardDescription>
-                        Bagaimana kami memahami masalah sebelum membangun
-                        solusi.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <ol className="flex flex-col">
+            {journey.length > 0 && (
+                <DetailSection
+                    eyebrow="Perjalanan konsultasi"
+                    title="Bagaimana kami memahami masalah sebelum membangun solusi"
+                >
+                    <ol className="site-card flex flex-col p-6 md:p-8">
                         {journey.map((step, position) => (
                             <li
                                 key={step.title}
                                 className="relative flex gap-5 pb-8 last:pb-0"
                             >
                                 {position < journey.length - 1 && (
-                                    <span className="absolute top-12 left-6 h-[calc(100%-3rem)] w-px bg-border" />
+                                    <span className="absolute top-14 left-6 h-[calc(100%-3.5rem)] w-px border-l-2 border-dashed border-primary/20" />
                                 )}
-                                <span className="relative flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                                <span className="relative flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/30">
                                     <step.icon className="size-5" />
                                 </span>
                                 <div className="flex flex-col gap-2 pt-1">
-                                    <span className="text-xs font-semibold text-muted-foreground">
+                                    <span className="text-sm font-semibold text-success">
                                         Tahap {position + 1}
                                     </span>
-                                    <h2 className="text-lg font-semibold">
+                                    <h3 className="text-xl font-bold">
                                         {step.title}
-                                    </h2>
+                                    </h3>
                                     <RichText
                                         html={step.body}
                                         className="text-muted-foreground"
@@ -220,86 +221,78 @@ export default function CaseStudyShow({
                             </li>
                         ))}
                     </ol>
-                </CardContent>
-            </Card>
+                </DetailSection>
+            )}
 
             {caseStudy.images && caseStudy.images.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Galeri</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <DetailSection eyebrow="Galeri" title="Dokumentasi proyek">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {caseStudy.images.map((image) => (
                             <figure
                                 key={image.id}
-                                className="flex flex-col gap-2"
+                                className="site-card flex flex-col overflow-hidden"
                             >
                                 <img
                                     src={image.url}
                                     alt={image.caption ?? caseStudy.title}
                                     loading="lazy"
-                                    className="aspect-video w-full rounded-xl object-cover"
+                                    className="aspect-video w-full object-cover"
                                 />
                                 {image.caption && (
-                                    <figcaption className="text-sm text-muted-foreground">
+                                    <figcaption className="p-4 text-sm text-muted-foreground">
                                         {image.caption}
                                     </figcaption>
                                 )}
                             </figure>
                         ))}
-                    </CardContent>
-                </Card>
+                    </div>
+                </DetailSection>
             )}
 
             {caseStudy.key_insights.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <SparklesIcon className="size-5 text-primary" />
-                            Insight untuk pimpinan
-                        </CardTitle>
-                        <CardDescription>
-                            Pelajaran strategis yang bisa diterapkan di
-                            perusahaan Anda.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-4 md:grid-cols-2">
+                <DetailSection
+                    eyebrow="Insight untuk pimpinan"
+                    title="Pelajaran yang bisa diterapkan di perusahaan Anda"
+                >
+                    <div className="grid gap-4 md:grid-cols-2">
                         {caseStudy.key_insights.map((insight) => (
                             <div
                                 key={insight.title}
-                                className="flex items-start gap-3 rounded-xl bg-muted p-5"
+                                className="site-card flex items-start gap-4 p-6"
                             >
-                                <CheckCircle2Icon className="mt-0.5 size-5 shrink-0 text-success" />
+                                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                                    <SparklesIcon className="size-5" />
+                                </span>
                                 <div className="flex flex-col gap-1">
                                     <span className="font-semibold">
                                         {insight.title}
                                     </span>
                                     {insight.description && (
-                                        <span className="text-sm text-muted-foreground">
+                                        <span className="text-sm leading-relaxed text-muted-foreground">
                                             {insight.description}
                                         </span>
                                     )}
                                 </div>
                             </div>
                         ))}
-                    </CardContent>
-                </Card>
+                    </div>
+                </DetailSection>
             )}
 
             {relatedCaseStudies.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Studi kasus lainnya</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <DetailSection
+                    eyebrow="Studi kasus"
+                    title="Studi kasus lainnya"
+                >
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {relatedCaseStudies.map((related) => (
                             <CaseStudyCard
                                 key={related.id}
                                 caseStudy={related}
                             />
                         ))}
-                    </CardContent>
-                </Card>
+                    </div>
+                </DetailSection>
             )}
         </>
     );

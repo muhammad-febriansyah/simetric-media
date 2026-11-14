@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CaseStudyResource;
+use App\Http\Resources\FaqResource;
 use App\Http\Resources\IndustryResource;
 use App\Models\Industry;
 use Inertia\Inertia;
@@ -34,6 +35,9 @@ class IndustryController extends Controller
             'industry' => (new IndustryResource($industry))->resolve(),
             'caseStudies' => CaseStudyResource::collection(
                 $industry->caseStudies()->published()->with('industry')->ordered()->limit(6)->get(),
+            )->resolve(),
+            'faqs' => FaqResource::collection(
+                $industry->faqs()->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get(),
             )->resolve(),
         ]);
     }

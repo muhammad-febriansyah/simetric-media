@@ -10,6 +10,7 @@ import {
     PhoneIcon,
     SendIcon,
     UserIcon,
+    MessageCircleIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -18,18 +19,12 @@ import ConsultationController from '@/actions/App/Http/Controllers/Site/Consulta
 import { OptionSelect } from '@/components/admin/option-select';
 import { FormField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import { FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { whatsappUrl } from '@/lib/whatsapp';
 import { home } from '@/routes';
 import { create } from '@/routes/consultation';
 import type { Option } from '@/types';
@@ -109,6 +104,7 @@ export default function ConsultationCreate({
     budgetOptions,
 }: Props) {
     const { company } = usePage().props;
+    const whatsappLink = whatsappUrl(company.contact.whatsapp);
     const [step, setStep] = useState(0);
     const [stepErrors, setStepErrors] = useState<
         Partial<Record<FieldName, string>>
@@ -220,9 +216,9 @@ export default function ConsultationCreate({
         <>
             <Head title="Konsultasi Gratis" />
 
-            <div className="grid items-start gap-6 lg:grid-cols-3">
-                <Card className="lg:col-span-2">
-                    <CardHeader className="gap-6">
+            <div className="grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
+                <section className="site-card flex flex-col gap-8 p-6 md:p-8">
+                    <div className="flex flex-col gap-6">
                         <ol className="grid grid-cols-3 gap-2">
                             {STEPS.map((item, position) => (
                                 <li
@@ -254,15 +250,15 @@ export default function ConsultationCreate({
                             ))}
                         </ol>
                         <div className="flex flex-col gap-1.5">
-                            <CardTitle>
+                            <h2 className="text-xl font-bold md:text-2xl">
                                 Langkah {step + 1}: {STEPS[step].title}
-                            </CardTitle>
-                            <CardDescription>
+                            </h2>
+                            <p className="text-sm text-muted-foreground">
                                 {STEPS[step].description}
-                            </CardDescription>
+                            </p>
                         </div>
-                    </CardHeader>
-                    <CardContent>
+                    </div>
+                    <div>
                         <form
                             onSubmit={submit}
                             className="flex flex-col gap-8"
@@ -557,17 +553,19 @@ export default function ConsultationCreate({
                                 </Button>
                             </div>
                         </form>
-                    </CardContent>
-                </Card>
+                    </div>
+                </section>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Setelah Anda mengirim</CardTitle>
-                        <CardDescription>
-                            Gratis dan tanpa komitmen.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-6">
+                <aside className="flex flex-col gap-6 lg:sticky lg:top-28">
+                    <div className="site-card flex flex-col gap-5 p-6">
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-lg font-bold">
+                                Setelah Anda mengirim
+                            </h2>
+                            <p className="text-sm text-muted-foreground">
+                                Gratis dan tanpa komitmen.
+                            </p>
+                        </div>
                         <ol className="flex flex-col gap-4">
                             {[
                                 'Tim kami menghubungi Anda maksimal 1 hari kerja.',
@@ -575,46 +573,58 @@ export default function ConsultationCreate({
                                 'Anda menerima gambaran solusi dan langkah berikutnya.',
                             ].map((item, position) => (
                                 <li key={item} className="flex gap-3 text-sm">
-                                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
+                                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                                         {position + 1}
                                     </span>
                                     <span className="pt-1">{item}</span>
                                 </li>
                             ))}
                         </ol>
-                        <div className="flex flex-col gap-3 rounded-xl bg-muted p-4 text-sm">
-                            <span className="font-semibold">
-                                Lebih suka langsung bicara?
-                            </span>
-                            <a
-                                href={`mailto:${company.contact.email}`}
-                                className="flex items-center gap-2 text-muted-foreground hover:text-primary"
-                            >
-                                <MailIcon className="size-4" />
-                                {company.contact.email}
-                            </a>
-                            <span className="flex items-center gap-2 text-muted-foreground">
-                                <PhoneIcon className="size-4" />
-                                {company.contact.phone}
-                            </span>
-                            {company.contact.business_hours && (
-                                <span className="flex items-center gap-2 text-muted-foreground">
-                                    <ClockIcon className="size-4" />
-                                    {company.contact.business_hours}
-                                </span>
-                            )}
-                        </div>
-                        {company.contact.maps_embed_url && (
-                            <iframe
-                                src={company.contact.maps_embed_url}
-                                title="Lokasi kantor di Google Maps"
-                                className="aspect-video w-full rounded-xl border-0"
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            />
+                    </div>
+                    <div className="flex flex-col gap-3 rounded-2xl bg-navy p-6 text-sm text-navy-foreground">
+                        <span className="text-base font-bold">
+                            Lebih suka langsung bicara?
+                        </span>
+                        {whatsappLink && (
+                            <Button asChild className="w-fit">
+                                <a
+                                    href={whatsappLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <MessageCircleIcon data-icon="inline-start" />
+                                    Chat WhatsApp
+                                </a>
+                            </Button>
                         )}
-                    </CardContent>
-                </Card>
+                        <a
+                            href={`mailto:${company.contact.email}`}
+                            className="flex w-fit items-center gap-2 text-white/70 hover:text-white"
+                        >
+                            <MailIcon className="size-4" />
+                            {company.contact.email}
+                        </a>
+                        <span className="flex items-center gap-2 text-white/70">
+                            <PhoneIcon className="size-4" />
+                            {company.contact.phone}
+                        </span>
+                        {company.contact.business_hours && (
+                            <span className="flex items-center gap-2 text-white/70">
+                                <ClockIcon className="size-4" />
+                                {company.contact.business_hours}
+                            </span>
+                        )}
+                    </div>
+                    {company.contact.maps_embed_url && (
+                        <iframe
+                            src={company.contact.maps_embed_url}
+                            title="Lokasi kantor di Google Maps"
+                            className="site-card aspect-video w-full border-0"
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        />
+                    )}
+                </aside>
             </div>
         </>
     );
@@ -625,6 +635,7 @@ ConsultationCreate.layout = {
         { title: 'Beranda', href: home() },
         { title: 'Konsultasi Gratis', href: create() },
     ],
+    eyebrow: 'Gratis dan tanpa komitmen',
     title: 'Konsultasi Gratis',
     description:
         'Ceritakan masalah bisnis Anda dalam 3 langkah singkat. Kami bantu petakan solusinya.',

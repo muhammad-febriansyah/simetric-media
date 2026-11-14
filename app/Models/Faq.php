@@ -37,6 +37,7 @@ class Faq extends Model
      * @var array<string, string>
      */
     public const PAGES = [
+        'home' => 'Beranda',
         'how-we-work' => 'Halaman Cara Kami Bekerja',
         'about' => 'Halaman Tentang',
         'consultation' => 'Halaman Konsultasi',

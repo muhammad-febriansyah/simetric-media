@@ -242,17 +242,29 @@ return to_route('admin.case-studies.index');
 Website publik memakai komponen dari **Aceternity UI**, **Magic UI**, dan **React Bits**. Komponen dipasang lewat registry shadcn (`npx shadcn@latest add @aceternity/… @magicui/… @react-bits/…-TS-TW`) lalu disesuaikan. Panel admin **tidak** memakai komponen ini.
 
 - Dependency animasi hanya `motion`. Jangan menambah gsap, three, atau ogl.
+- Arah visual: **terang dan rapi**. Animasi hanya untuk hal yang memberi makna (logo dan testimoni bergerak, angka berjalan, alur integrasi, muncul saat di-scroll).
 - Komponen yang dipakai:
     - `resizable-navbar` (header publik)
     - `blur-fade` (muncul saat di-scroll)
-    - `dot-pattern` (versi SVG `<pattern>`, ringan)
-    - `marquee` (logo klien, testimoni)
-    - `number-ticker` (angka)
-    - `safari` (mockup produk)
-    - `border-beam` (produk unggulan)
+    - `dot-pattern` (latar hero, versi SVG `<pattern>`)
+    - `marquee` (logo klien polos dengan `mix-blend-multiply` dan `grayscale`, testimoni dua baris berlawanan arah dengan review card)
+    - `number-ticker` (angka statistik, tanpa kotak kartu)
+    - `word-rotate` (nama industri bergantian di badge hero)
+    - `bento-grid` (Bidang Keahlian di beranda)
+    - `animated-beam` (diagram integrasi sistem di beranda)
+    - `card-hover-effect` (kartu industri di beranda)
+    - `animated-list` (hero: perjalanan proyek 7 tahap muncul satu per satu)
     - `timeline` (proses 7 tahap)
-    - `shiny-text`
-    - `spotlight-card` (kartu Keahlian)
+- Pola tata letak mengikuti buildwithangga.com:
+    - Heading section: eyebrow hijau (`text-success`), judul `text-2xl md:text-[2rem] font-bold` (`SectionHeading`, `onDark` untuk pita navy).
+    - Header halaman dalam: `SitePageHeader` (breadcrumb, eyebrow, judul `md:text-[2.75rem]`, deskripsi).
+    - Kartu publik memakai class `site-card` (putih, rounded-2xl/16px, tanpa border dan tanpa bayangan, sama dengan BWA) dan `site-card-interactive` (garis biru 2px saat hover) untuk kartu yang bisa diklik. Kartu konten (studi kasus, produk, insight) memakai padding 30px (`md:p-7.5`) dengan gambar di dalam padding (`rounded-2xl`) dan judul `text-xl font-bold`.
+    - Warna navy (`bg-navy`) hanya untuk banner CTA dan pita testimoni.
+    - FAQ memakai `FaqList` (dua kolom, collapsible). FAQ beranda diisi dari menu FAQ dengan penempatan "Beranda".
+    - Tombol WhatsApp melayang (`WhatsappButton`) memakai nomor dari Pengaturan Website.
+    - Halaman daftar: filter pakai `FilterPills`, pagination pakai `SitePagination`, empty state pakai `SiteEmpty`.
+    - Halaman detail: blok konten pakai `DetailSection` (eyebrow + judul), kartu ringkasan di kanan `lg:sticky lg:top-28`, tombol mulai pakai `ConsultActions` (form konsultasi + WhatsApp).
+- Jangan dipakai karena terkesan berlebihan: spotlight/beams/sparkles/lamp/aurora/meteors, latar WebGL, tombol shimmer atau rainbow, border menyala, teks bergradasi, dan section gelap.
 - Checklist setelah `add` dari registry:
     - Buang semua class `dark:`.
     - Ganti warna hardcode dengan token (`primary`, `muted`, `card`, `border`).

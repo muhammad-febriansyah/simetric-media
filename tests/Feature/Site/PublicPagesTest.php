@@ -5,6 +5,7 @@ use App\Models\CaseStudy;
 use App\Models\CaseStudyImage;
 use App\Models\ClientLogo;
 use App\Models\Expertise;
+use App\Models\Faq;
 use App\Models\Industry;
 use App\Models\Product;
 use App\Models\Service;
@@ -222,3 +223,45 @@ test('feeds the home page with active logos and testimonials, published expertis
             })
         );
 });
+
+test('shows only active home page FAQs on the home page in their sort order', function () {
+    $second = Faq::factory()->create(['page' => 'home', 'sort_order' => 2]);
+    $first = Faq::factory()->create(['page' => 'home', 'sort_order' => 1]);
+    Faq::factory()->inactive()->create(['page' => 'home']);
+    Faq::factory()->create(['page' => 'how-we-work']);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('faqs', fn ($faqs) => collect($faqs)->pluck('id')->all() === [$first->id, $second->id])
+        );
+});
+
+test('shows only active how-we-work FAQs on the process page', function () {
+    $faq = Faq::factory()->create(['page' => 'how-we-work']);
+    Faq::factory()->inactive()->create(['page' => 'how-we-work']);
+    Faq::factory()->create(['page' => 'home']);
+
+    $this->get(route('how-we-work'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('faqs', fn ($faqs) => collect($faqs)->pluck('id')->all() === [$faq->id])
+        );
+});
+
+test('shows only the active FAQs of a service or industry on its detail page', function (string $modelClass, string $routeName, string $component) {
+    $record = $modelClass::factory()->create();
+    $faq = Faq::factory()->create(['page' => null, 'faqable_type' => $record->getMorphClass(), 'faqable_id' => $record->id]);
+    Faq::factory()->inactive()->create(['page' => null, 'faqable_type' => $record->getMorphClass(), 'faqable_id' => $record->id]);
+    Faq::factory()->create(['page' => 'home']);
+
+    $this->get(route($routeName, $record->slug))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component($component)
+            ->where('faqs', fn ($faqs) => collect($faqs)->pluck('id')->all() === [$faq->id])
+        );
+})->with([
+    'service' => [Service::class, 'services.show', 'site/services/show'],
+    'industry' => [Industry::class, 'industries.show', 'site/industries/show'],
+]);

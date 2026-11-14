@@ -1,18 +1,12 @@
-import { Head, router } from '@inertiajs/react';
-import { ChevronLeftIcon, ChevronRightIcon, NewspaperIcon } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { ArrowRightIcon, NewspaperIcon } from 'lucide-react';
 import { ArticleCard } from '@/components/site/article-card';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { FilterPills } from '@/components/site/filter-pills';
+import { SiteEmpty } from '@/components/site/site-empty';
+import { SitePagination } from '@/components/site/site-pagination';
+import { Badge } from '@/components/ui/badge';
 import { home } from '@/routes';
-import { index } from '@/routes/insights';
+import { index, show } from '@/routes/insights';
 import type { Article, Paginated } from '@/types';
 
 type Props = {
@@ -21,10 +15,63 @@ type Props = {
     categories: string[];
 };
 
-const ALL = 'all';
+/** Newest insight shown large at the top of the first, unfiltered page. */
+function FeaturedArticle({ article }: { article: Article }) {
+    return (
+        <Link
+            href={show(article.slug)}
+            className="group flex rounded-2xl focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+        >
+            <div className="site-card site-card-interactive grid w-full gap-6 p-6 md:p-7.5 lg:grid-cols-2 lg:gap-10">
+                {article.cover_image_url ? (
+                    <img
+                        src={article.cover_image_url}
+                        alt={article.title}
+                        className="aspect-video w-full rounded-2xl object-cover"
+                    />
+                ) : (
+                    <div className="flex aspect-video items-center justify-center rounded-2xl bg-accent text-accent-foreground">
+                        <NewspaperIcon className="size-14" />
+                    </div>
+                )}
+                <div className="flex flex-col justify-center gap-4">
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                        <span className="font-semibold text-success">
+                            Insight terbaru
+                        </span>
+                        {article.category && (
+                            <Badge variant="secondary">
+                                {article.category}
+                            </Badge>
+                        )}
+                        {article.published_at_label && (
+                            <span>{article.published_at_label}</span>
+                        )}
+                    </div>
+                    <h2 className="text-2xl leading-tight font-bold group-hover:text-primary md:text-3xl">
+                        {article.title}
+                    </h2>
+                    {article.excerpt && (
+                        <p className="line-clamp-3 leading-relaxed text-muted-foreground">
+                            {article.excerpt}
+                        </p>
+                    )}
+                    <span className="flex items-center gap-1.5 font-semibold text-primary">
+                        Baca insight
+                        <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
+                    </span>
+                </div>
+            </div>
+        </Link>
+    );
+}
 
 export default function InsightIndex({ articles, filters, categories }: Props) {
     const { current_page: currentPage, last_page: lastPage } = articles.meta;
+    const showFeatured =
+        currentPage === 1 && !filters.category && articles.data.length > 1;
+    const [featured, ...rest] = articles.data;
+    const gridArticles = showFeatured ? rest : articles.data;
 
     const visit = (query: { category?: string; page?: number }) => {
         const category = query.category ?? filters.category;
@@ -41,82 +88,44 @@ export default function InsightIndex({ articles, filters, categories }: Props) {
             <Head title="Insight" />
 
             {categories.length > 0 && (
-                <Card>
-                    <CardContent>
-                        <ToggleGroup
-                            type="single"
-                            variant="outline"
-                            value={filters.category || ALL}
-                            onValueChange={(value) =>
-                                visit({
-                                    category:
-                                        !value || value === ALL ? '' : value,
-                                })
-                            }
-                            className="flex-wrap"
-                            aria-label="Filter kategori"
-                        >
-                            <ToggleGroupItem value={ALL}>Semua</ToggleGroupItem>
-                            {categories.map((category) => (
-                                <ToggleGroupItem
-                                    key={category}
-                                    value={category}
-                                >
-                                    {category}
-                                </ToggleGroupItem>
-                            ))}
-                        </ToggleGroup>
-                    </CardContent>
-                </Card>
+                <FilterPills
+                    label="Filter kategori"
+                    options={categories.map((category) => ({
+                        value: category,
+                        label: category,
+                    }))}
+                    value={filters.category}
+                    onChange={(category) => visit({ category })}
+                />
             )}
 
             {articles.data.length === 0 ? (
-                <Card>
-                    <CardContent>
-                        <Empty>
-                            <EmptyHeader>
-                                <EmptyMedia variant="icon">
-                                    <NewspaperIcon />
-                                </EmptyMedia>
-                                <EmptyTitle>Belum ada insight</EmptyTitle>
-                                <EmptyDescription>
-                                    Artikel baru akan segera hadir.
-                                </EmptyDescription>
-                            </EmptyHeader>
-                        </Empty>
-                    </CardContent>
-                </Card>
+                <SiteEmpty
+                    icon={NewspaperIcon}
+                    title="Belum ada insight"
+                    description="Artikel baru akan segera hadir."
+                />
             ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {articles.data.map((article) => (
-                        <ArticleCard key={article.id} article={article} />
-                    ))}
-                </div>
+                <>
+                    {showFeatured && <FeaturedArticle article={featured} />}
+                    {gridArticles.length > 0 && (
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {gridArticles.map((article) => (
+                                <ArticleCard
+                                    key={article.id}
+                                    article={article}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </>
             )}
 
-            {lastPage > 1 && (
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                    <Button
-                        variant="secondary"
-                        disabled={currentPage <= 1}
-                        onClick={() => visit({ page: currentPage - 1 })}
-                    >
-                        <ChevronLeftIcon data-icon="inline-start" />
-                        Sebelumnya
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-                        Halaman {currentPage} dari {lastPage}
-                    </span>
-                    <Button
-                        variant="secondary"
-                        disabled={currentPage >= lastPage}
-                        onClick={() => visit({ page: currentPage + 1 })}
-                    >
-                        Berikutnya
-                        <ChevronRightIcon data-icon="inline-end" />
-                    </Button>
-                </div>
-            )}
+            <SitePagination
+                currentPage={currentPage}
+                lastPage={lastPage}
+                onPageChange={(page) => visit({ page })}
+            />
         </>
     );
 }
@@ -126,7 +135,8 @@ InsightIndex.layout = {
         { title: 'Beranda', href: home() },
         { title: 'Insight', href: index() },
     ],
-    title: 'Insight',
+    eyebrow: 'Insight',
+    title: 'Insight untuk Pemilik Bisnis',
     description:
         'Panduan praktis seputar strategi, teknologi, dan operasional untuk pemilik bisnis dan manajer.',
 };

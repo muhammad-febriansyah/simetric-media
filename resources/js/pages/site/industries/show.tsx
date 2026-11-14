@@ -1,103 +1,87 @@
-import { Head, Link } from '@inertiajs/react';
-import { AlertCircleIcon, ArrowRightIcon } from 'lucide-react';
+import { Head } from '@inertiajs/react';
+import { AlertCircleIcon } from 'lucide-react';
 import { CaseStudyCard } from '@/components/site/case-study-card';
-import { ContentIcon } from '@/components/site/content-icon';
-import { PageHeader } from '@/components/page-header';
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { ConsultActions } from '@/components/site/consult-actions';
+import { DetailSection } from '@/components/site/detail-section';
+import { FaqList } from '@/components/site/faq-list';
+import { SitePageHeader } from '@/components/site/site-page-header';
 import { home } from '@/routes';
-import { create as consultationCreate } from '@/routes/consultation';
 import { index, show } from '@/routes/industries';
-import type { CaseStudy, Industry } from '@/types';
+import type { CaseStudy, Faq, Industry } from '@/types';
 
 type Props = {
     industry: Industry;
     caseStudies: CaseStudy[];
+    faqs: Faq[];
 };
 
-export default function IndustryShow({ industry, caseStudies }: Props) {
-    const pageHeader = {
-        breadcrumbs: [
-            { title: 'Beranda', href: home() },
-            { title: 'Industri', href: index() },
-            { title: industry.name, href: show(industry.slug) },
-        ],
-        title: `Solusi untuk ${industry.name}`,
-        description: industry.summary ?? undefined,
-    };
-
+export default function IndustryShow({ industry, caseStudies, faqs }: Props) {
     return (
         <>
             <Head title={industry.name} />
 
-            <PageHeader {...pageHeader} />
+            <SitePageHeader
+                breadcrumbs={[
+                    { title: 'Beranda', href: home() },
+                    { title: 'Industri', href: index() },
+                    { title: industry.name, href: show(industry.slug) },
+                ]}
+                eyebrow={`Industri ${industry.name}`}
+                title={`Solusi untuk ${industry.name}`}
+                description={industry.summary ?? undefined}
+            >
+                <ConsultActions
+                    message={`Halo, saya dari industri ${industry.name} dan ingin konsultasi.`}
+                />
+            </SitePageHeader>
 
-            <div className="grid items-start gap-6 lg:grid-cols-3">
-                <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle>Masalah yang sering kami temui</CardTitle>
-                        <CardDescription>
-                            Apakah salah satunya terjadi di perusahaan Anda?
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-4 md:grid-cols-2">
+            {industry.pain_points.length > 0 && (
+                <DetailSection
+                    eyebrow="Tantangan umum"
+                    title="Masalah yang sering kami temui"
+                    description="Apakah salah satunya terjadi di perusahaan Anda?"
+                >
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {industry.pain_points.map((painPoint) => (
                             <div
                                 key={painPoint}
-                                className="flex items-start gap-3 rounded-xl bg-muted p-4"
+                                className="site-card flex items-start gap-4 p-5"
                             >
-                                <AlertCircleIcon className="mt-0.5 size-5 shrink-0 text-primary" />
-                                <span className="text-sm font-medium">
+                                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                                    <AlertCircleIcon className="size-5" />
+                                </span>
+                                <span className="pt-2 text-sm font-semibold">
                                     {painPoint}
                                 </span>
                             </div>
                         ))}
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="flex flex-col gap-4">
-                        <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                            <ContentIcon iconName={industry.icon} />
-                        </span>
-                        <h2 className="text-lg font-semibold">
-                            Mulai dari konsultasi
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                            Ceritakan kondisi perusahaan Anda. Kami bantu
-                            petakan prioritas masalah dan solusi yang paling
-                            masuk akal.
-                        </p>
-                        <Button asChild>
-                            <Link href={consultationCreate()}>
-                                Konsultasi Gratis
-                                <ArrowRightIcon data-icon="inline-end" />
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
+                </DetailSection>
+            )}
 
             {caseStudies.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Studi kasus {industry.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <DetailSection
+                    eyebrow="Studi kasus"
+                    title={`Studi kasus ${industry.name}`}
+                >
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {caseStudies.map((caseStudy) => (
                             <CaseStudyCard
                                 key={caseStudy.id}
                                 caseStudy={caseStudy}
                             />
                         ))}
-                    </CardContent>
-                </Card>
+                    </div>
+                </DetailSection>
+            )}
+
+            {faqs.length > 0 && (
+                <DetailSection
+                    eyebrow="Tanya jawab"
+                    title={`Pertanyaan seputar ${industry.name}`}
+                >
+                    <FaqList faqs={faqs} />
+                </DetailSection>
             )}
         </>
     );

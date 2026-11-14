@@ -60,7 +60,18 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
-    /* Marquee (Magic UI) for client logos and testimonials. */
+    /* Navy accent surface (BuildWithAngga style banners and testimonial band). */
+    --color-navy: var(--navy);
+    --color-navy-foreground: var(--navy-foreground);
+}
+
+/*
+ * Marquee (Magic UI) for client logos and testimonials. Declared `inline` so
+ * `var(--duration)` and `var(--gap)` resolve on the marquee element itself;
+ * as regular theme variables they would resolve on :root, where --duration is
+ * undefined, and the animation would silently become `none`.
+ */
+@theme inline {
     --animate-marquee: marquee var(--duration) infinite linear;
     --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
 
@@ -119,6 +130,8 @@
     --sidebar-accent-foreground: #2547f9;
     --sidebar-border: #e5e9f2;
     --sidebar-ring: #2547f9;
+    --navy: #1b1a3f;
+    --navy-foreground: #ffffff;
 }
 
 @layer base {
@@ -202,6 +215,20 @@
     .rich-text p.is-editor-empty:first-child::before {
         @apply pointer-events-none float-left h-0 text-muted-foreground;
         content: attr(data-placeholder);
+    }
+}
+
+/*
+ * Public website card, matching buildwithangga.com: flat white surface, 16px
+ * radius, no border and no shadow. Clickable cards get a primary outline on hover.
+ */
+@layer components {
+    .site-card {
+        @apply rounded-2xl bg-card;
+    }
+
+    .site-card-interactive {
+        @apply ring-2 ring-transparent transition-shadow duration-200 hover:ring-primary;
     }
 }
 

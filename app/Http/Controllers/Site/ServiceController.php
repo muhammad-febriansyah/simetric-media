@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\CaseStudyResource;
+use App\Http\Resources\FaqResource;
 use App\Http\Resources\ServiceResource;
 use App\Models\Service;
 use Inertia\Inertia;
@@ -28,6 +29,9 @@ class ServiceController extends Controller
             )->resolve(),
             'caseStudies' => CaseStudyResource::collection(
                 $service->caseStudies()->published()->with('industry')->ordered()->limit(3)->get(),
+            )->resolve(),
+            'faqs' => FaqResource::collection(
+                $service->faqs()->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get(),
             )->resolve(),
         ]);
     }
