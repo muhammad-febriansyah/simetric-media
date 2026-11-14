@@ -87,6 +87,7 @@ Prioritas: **panel admin dulu**, website publik menyusul.
 - [x] Solusi per divisi bisnis + relasi ke studi kasus
 - [x] Bidang Keahlian (pengganti enum pilar) + halaman publik `/keahlian` bergaya Suitmedia Expertises, intro dari Pengaturan Website, insight terkait, redirect `/layanan`
 - [x] Halaman publik Insight (`/insight`, `/insight/{slug}`) dengan filter kategori
+- [x] UI publik bergaya tech: resizable navbar (Aceternity), Beranda dengan hero mockup, marquee logo & testimoni, angka berjalan, bento keahlian, timeline proses (Magic UI / Aceternity / React Bits), blur-fade halaman dalam, spotlight card Keahlian
 - [x] Rich text editor (Tiptap) untuk 9 field konten panjang + sanitasi HTML di server (symfony/html-sanitizer) + migration konversi teks lama ke HTML
 - [x] Produk milik perusahaan (admin CRUD, `/produk`, section Beranda) + `ProductSeeder` berisi LegalPartner.ID, ChatCepat, KarirConnect dengan logo & cover di `database/seeders/assets/products`
 - [x] FAQ (halaman statis, layanan, industri, solusi)

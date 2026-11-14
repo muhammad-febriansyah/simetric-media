@@ -1,24 +1,25 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
     BoxIcon,
     BriefcaseBusinessIcon,
     Building2Icon,
     FolderKanbanIcon,
-    MenuIcon,
     MessagesSquareIcon,
     NewspaperIcon,
     RouteIcon,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { BrandMark } from '@/components/brand-mark';
 import { Button } from '@/components/ui/button';
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from '@/components/ui/sheet';
+    MobileNav,
+    MobileNavHeader,
+    MobileNavMenu,
+    MobileNavToggle,
+    NavBody,
+    Navbar,
+    NavItems,
+} from '@/components/ui/resizable-navbar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn } from '@/lib/utils';
 import { home, howWeWork } from '@/routes';
@@ -42,99 +43,119 @@ export function SiteLogo() {
     const { name } = usePage().props;
 
     return (
-        <Link href={home()} className="flex items-center gap-3">
+        <Link href={home()} className="flex shrink-0 items-center gap-3">
             <BrandMark className="size-10" />
-            <span className="text-lg font-semibold">{name}</span>
+            <span className="text-lg font-semibold whitespace-nowrap">
+                {name}
+            </span>
         </Link>
     );
 }
 
+const MOBILE_MENU_ID = 'site-mobile-menu';
+
+/**
+ * Public site header: a resizable navbar that shrinks into a floating pill on scroll.
+ */
 export function SiteHeader() {
     const { isCurrentOrParentUrl } = useCurrentUrl();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const items = siteNavItems.map((item) => ({
+        ...item,
+        isActive: isCurrentOrParentUrl(item.href),
+    }));
+
+    useEffect(() => {
+        const removeListener = router.on('navigate', () =>
+            setIsMobileMenuOpen(false),
+        );
+        const closeOnEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        window.addEventListener('keydown', closeOnEscape);
+
+        return () => {
+            removeListener();
+            window.removeEventListener('keydown', closeOnEscape);
+        };
+    }, []);
 
     return (
-        <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
-            <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between gap-6 px-4 md:px-6">
+        <Navbar>
+            <NavBody>
                 <SiteLogo />
+                <NavItems items={items} />
+                <Button asChild>
+                    <Link href={consultationCreate()}>
+                        <MessagesSquareIcon data-icon="inline-start" />
+                        Konsultasi Gratis
+                    </Link>
+                </Button>
+            </NavBody>
 
-                <nav
-                    className="hidden items-center gap-1 xl:flex"
-                    aria-label="Menu utama"
-                >
-                    {siteNavItems.map((item) => (
+            <MobileNav>
+                <MobileNavHeader>
+                    <SiteLogo />
+                    <div className="flex items-center gap-2">
                         <Button
-                            key={item.title}
-                            variant="ghost"
-                            size="sm"
                             asChild
-                            className={cn(
-                                isCurrentOrParentUrl(item.href) &&
-                                    'bg-accent text-accent-foreground',
-                            )}
+                            size="sm"
+                            className="hidden sm:inline-flex"
                         >
-                            <Link href={item.href} prefetch>
-                                <item.icon data-icon="inline-start" />
-                                {item.title}
+                            <Link href={consultationCreate()}>
+                                <MessagesSquareIcon data-icon="inline-start" />
+                                Konsultasi
                             </Link>
                         </Button>
-                    ))}
-                </nav>
+                        <MobileNavToggle
+                            isOpen={isMobileMenuOpen}
+                            controls={MOBILE_MENU_ID}
+                            onClick={() =>
+                                setIsMobileMenuOpen((isOpen) => !isOpen)
+                            }
+                        />
+                    </div>
+                </MobileNavHeader>
 
-                <div className="flex items-center gap-2">
-                    <Button asChild className="hidden sm:inline-flex">
-                        <Link href={consultationCreate()}>
+                <MobileNavMenu id={MOBILE_MENU_ID} isOpen={isMobileMenuOpen}>
+                    <nav
+                        aria-label="Menu utama"
+                        className="flex flex-col gap-1"
+                    >
+                        {items.map((item) => (
+                            <Link
+                                key={item.title}
+                                href={item.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                aria-current={
+                                    item.isActive ? 'page' : undefined
+                                }
+                                className={cn(
+                                    'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
+                                    item.isActive
+                                        ? 'bg-accent text-primary'
+                                        : 'text-foreground hover:bg-muted',
+                                )}
+                            >
+                                <item.icon className="size-4" />
+                                {item.title}
+                            </Link>
+                        ))}
+                    </nav>
+                    <Button asChild className="mt-2">
+                        <Link
+                            href={consultationCreate()}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
                             <MessagesSquareIcon data-icon="inline-start" />
                             Konsultasi Gratis
                         </Link>
                     </Button>
-
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="xl:hidden"
-                            >
-                                <MenuIcon />
-                                <span className="sr-only">Buka menu</span>
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-72">
-                            <SheetHeader>
-                                <SheetTitle>Menu</SheetTitle>
-                                <SheetDescription className="sr-only">
-                                    Navigasi utama website
-                                </SheetDescription>
-                            </SheetHeader>
-                            <nav className="flex flex-col gap-1 px-4">
-                                {siteNavItems.map((item) => (
-                                    <Button
-                                        key={item.title}
-                                        variant="ghost"
-                                        asChild
-                                        className={cn(
-                                            'justify-start',
-                                            isCurrentOrParentUrl(item.href) &&
-                                                'bg-accent text-accent-foreground',
-                                        )}
-                                    >
-                                        <Link href={item.href}>
-                                            <item.icon data-icon="inline-start" />
-                                            {item.title}
-                                        </Link>
-                                    </Button>
-                                ))}
-                                <Button asChild className="mt-4">
-                                    <Link href={consultationCreate()}>
-                                        <MessagesSquareIcon data-icon="inline-start" />
-                                        Konsultasi Gratis
-                                    </Link>
-                                </Button>
-                            </nav>
-                        </SheetContent>
-                    </Sheet>
-                </div>
-            </div>
-        </header>
+                </MobileNavMenu>
+            </MobileNav>
+        </Navbar>
     );
 }

@@ -25,7 +25,10 @@ export default function HowWeWork({ process }: { process: ProcessStep[] }) {
                                     {step.description}
                                 </p>
                                 <div className="flex flex-wrap gap-2 pt-1">
-                                    <Badge variant="secondary">
+                                    <Badge
+                                        variant="secondary"
+                                        className="h-auto text-left whitespace-normal"
+                                    >
                                         <PackageCheckIcon />
                                         {step.deliverable}
                                     </Badge>

@@ -95,7 +95,7 @@ export default function InsightIndex({ articles, filters, categories }: Props) {
             )}
 
             {lastPage > 1 && (
-                <div className="flex items-center justify-center gap-3">
+                <div className="flex flex-wrap items-center justify-center gap-3">
                     <Button
                         variant="secondary"
                         disabled={currentPage <= 1}

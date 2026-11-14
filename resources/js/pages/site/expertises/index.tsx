@@ -5,6 +5,7 @@ import { ArticleCard } from '@/components/site/article-card';
 import { ContentIcon } from '@/components/site/content-icon';
 import { SectionHeading } from '@/components/site/section-heading';
 import { Button } from '@/components/ui/button';
+import SpotlightCard from '@/components/ui/spotlight-card';
 import { Card, CardContent } from '@/components/ui/card';
 import {
     Empty,
@@ -57,8 +58,14 @@ export default function ExpertiseIndex({ intro, expertises, articles }: Props) {
             )}
 
             {expertises.map((expertise) => (
-                <Card key={expertise.id} id={expertise.slug}>
-                    <CardContent className="grid gap-6 lg:grid-cols-3">
+                <SpotlightCard
+                    key={expertise.id}
+                    id={expertise.slug}
+                    theme="light"
+                    spotlightColor="rgba(37, 71, 249, 0.16)"
+                    className="scroll-mt-28 rounded-2xl p-6 md:p-8"
+                >
+                    <div className="grid gap-6 lg:grid-cols-3">
                         <div className="flex flex-col gap-3">
                             <span className="flex size-12 items-center justify-center rounded-xl bg-accent text-accent-foreground">
                                 <ContentIcon iconName={expertise.icon} />
@@ -91,8 +98,8 @@ export default function ExpertiseIndex({ intro, expertises, articles }: Props) {
                                 </Link>
                             ))}
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </SpotlightCard>
             ))}
 
             {articles.length > 0 && (

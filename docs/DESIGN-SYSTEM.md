@@ -237,6 +237,33 @@ return to_route('admin.case-studies.index');
 | Form di panel samping          | `Sheet`                                                               |
 | Pemisah                        | `Separator`                                                           |
 
+## 12b. Komponen Animasi Website Publik
+
+Website publik memakai komponen dari **Aceternity UI**, **Magic UI**, dan **React Bits**. Komponen dipasang lewat registry shadcn (`npx shadcn@latest add @aceternity/… @magicui/… @react-bits/…-TS-TW`) lalu disesuaikan. Panel admin **tidak** memakai komponen ini.
+
+- Dependency animasi hanya `motion`. Jangan menambah gsap, three, atau ogl.
+- Komponen yang dipakai:
+    - `resizable-navbar` (header publik)
+    - `blur-fade` (muncul saat di-scroll)
+    - `dot-pattern` (versi SVG `<pattern>`, ringan)
+    - `marquee` (logo klien, testimoni)
+    - `number-ticker` (angka)
+    - `safari` (mockup produk)
+    - `border-beam` (produk unggulan)
+    - `timeline` (proses 7 tahap)
+    - `shiny-text`
+    - `spotlight-card` (kartu Keahlian)
+- Checklist setelah `add` dari registry:
+    - Buang semua class `dark:`.
+    - Ganti warna hardcode dengan token (`primary`, `muted`, `card`, `border`).
+    - Ganti `<a href>` internal dengan `Link` Inertia.
+    - Ganti ikon tabler/radix dengan lucide.
+    - Cek import `cn` mengarah ke `@/lib/utils`, lalu hapus paket `cn` kalau ikut terpasang.
+    - Pindahkan file yang dibuat di luar `resources/js` (CLI kadang menulis ke `components/` di root).
+    - CLI memakai pnpm karena ada `pnpm-lock.yaml`. Kembalikan lockfile itu dan install dengan npm.
+- Animasi harus mematuhi `prefers-reduced-motion`. `SiteLayout` membungkus semuanya dengan `<MotionConfig reducedMotion="user">`, dan `animate-marquee` dimatikan lewat CSS.
+- Tidak boleh ada scroll horizontal di 375, 768, 1100, 1280, dan 1440 px. Ini dicek oleh E2E. Badge berteks panjang pakai `h-auto whitespace-normal`.
+
 ## 13. Do dan Don't
 
 | Do                                                  | Don't                                                     |

@@ -185,3 +185,40 @@ test('filters insights by category', function () {
             ->where('categories', ['Strategi', 'Teknologi'])
         );
 });
+
+test('feeds the home page with active logos and testimonials, published expertise and real counts', function () {
+    $industry = Industry::factory()->create();
+    Industry::factory()->draft()->create();
+    CaseStudy::factory()->count(2)->for($industry)->create();
+    CaseStudy::factory()->draft()->create();
+    $product = Product::factory()->create();
+    Product::factory()->draft()->create();
+    $logo = ClientLogo::factory()->create();
+    ClientLogo::factory()->create(['is_active' => false]);
+    $testimonial = Testimonial::factory()->create();
+    Testimonial::factory()->create(['is_active' => false]);
+    $expertise = Expertise::factory()->create();
+    Service::factory()->for($expertise)->create();
+    Service::factory()->draft()->for($expertise)->create();
+    $draftExpertise = Expertise::factory()->draft()->create();
+    Service::factory()->for($draftExpertise)->create();
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('stats', [
+                'caseStudies' => 2,
+                'products' => 1,
+                'industries' => Industry::query()->published()->count(),
+                'clients' => 1,
+            ])
+            ->where('clientLogos', fn ($logos) => collect($logos)->pluck('id')->all() === [$logo->id])
+            ->where('testimonials', fn ($testimonials) => collect($testimonials)->pluck('id')->all() === [$testimonial->id])
+            ->where('expertises', function ($expertises) use ($expertise, $draftExpertise) {
+                $shown = collect($expertises)->firstWhere('id', $expertise->id);
+
+                return $shown['services_count'] === 1
+                    && ! collect($expertises)->contains('id', $draftExpertise->id);
+            })
+        );
+});
