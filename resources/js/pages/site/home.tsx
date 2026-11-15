@@ -11,9 +11,9 @@ import {
 import { CaseStudyCard } from '@/components/site/case-study-card';
 import { ContentIcon } from '@/components/site/content-icon';
 import { FaqList } from '@/components/site/faq-list';
+import { HeroServiceLines } from '@/components/site/hero-service-lines';
 import { IntegrationDiagram } from '@/components/site/integration-diagram';
 import { ProductCard } from '@/components/site/product-card';
-import { ProjectJourney } from '@/components/site/project-journey';
 import { SectionHeading } from '@/components/site/section-heading';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,6 @@ import { DotPattern } from '@/components/ui/dot-pattern';
 import { Marquee } from '@/components/ui/marquee';
 import { NumberTicker } from '@/components/ui/number-ticker';
 import { Timeline } from '@/components/ui/timeline';
-import { WordRotate } from '@/components/ui/word-rotate';
 import { cn } from '@/lib/utils';
 import { howWeWork } from '@/routes';
 import { index as caseStudiesIndex } from '@/routes/case-studies';
@@ -90,6 +89,13 @@ const integrationPoints = [
     'Tanpa harus mengganti sistem yang sudah dipakai',
     'Data dimasukkan sekali, dipakai di semua bagian',
     'Laporan manajemen terbarui otomatis',
+];
+
+/** Main service lines highlighted on the right side of the hero. */
+const heroServiceLines = [
+    'Web Application Development',
+    'Mobile Application Development',
+    'AI Automation Solutions',
 ];
 
 const SECTION =
@@ -158,10 +164,6 @@ export default function Home({
     testimonials,
     faqs,
 }: Props) {
-    const heroIndustries =
-        industries.length > 0
-            ? industries.map((industry) => industry.name)
-            : ['industri'];
     const [firstTestimonialRow, secondTestimonialRow] = [
         testimonials.slice(0, Math.ceil(testimonials.length / 2)),
         testimonials.slice(Math.ceil(testimonials.length / 2)),
@@ -209,26 +211,16 @@ export default function Home({
             {/* Hero */}
             <section className="relative isolate overflow-hidden">
                 <DotPattern className="-z-10 [mask-image:radial-gradient(ellipse_at_top,white_20%,transparent_70%)]" />
-                <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 py-14 md:px-6 lg:grid-cols-[1.25fr_1fr] lg:py-20">
+                <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 py-14 md:px-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16 lg:py-24">
                     <div className="flex flex-col items-start gap-6">
                         <BlurFade delay={0.05}>
-                            <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-4 py-1.5 text-sm font-medium shadow-sm">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm font-semibold text-primary md:text-base">
                                 <span className="size-2 shrink-0 rounded-full bg-success" />
-                                <span className="text-muted-foreground">
-                                    Konsultan{' '}
-                                    <span className="hidden sm:inline">
-                                        teknologi{' '}
-                                    </span>
-                                    A–Z untuk
-                                </span>
-                                <WordRotate
-                                    words={heroIndustries}
-                                    className="font-semibold text-primary"
-                                />
+                                Konsultan teknologi A–Z untuk industri
                             </span>
                         </BlurFade>
                         <BlurFade delay={0.15}>
-                            <h1 className="text-4xl leading-tight font-bold tracking-tight md:text-5xl">
+                            <h1 className="text-4xl leading-[1.15] font-bold tracking-tight md:text-5xl xl:text-[3.5rem]">
                                 Dari masalah bisnis sampai{' '}
                                 <span className="text-primary">
                                     solusi aplikasi
@@ -241,7 +233,7 @@ export default function Home({
                             </h1>
                         </BlurFade>
                         <BlurFade delay={0.25}>
-                            <p className="max-w-xl text-lg text-muted-foreground">
+                            <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl md:leading-relaxed">
                                 Kami bukan sekadar pembuat aplikasi. Kami
                                 mendampingi perusahaan Anda dari konsultasi
                                 awal, assessment, perancangan, pengembangan,
@@ -267,7 +259,7 @@ export default function Home({
                     </div>
 
                     <BlurFade delay={0.3} direction="left">
-                        <ProjectJourney steps={process} />
+                        <HeroServiceLines items={heroServiceLines} />
                     </BlurFade>
                 </div>
             </section>

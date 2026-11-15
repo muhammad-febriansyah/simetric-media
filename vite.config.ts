@@ -13,8 +13,8 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
             fonts: [
-                google('Poppins', {
-                    weights: [400, 500, 600, 700],
+                google('Plus Jakarta Sans', {
+                    weights: [300, 400, 500, 600, 700, 800],
                 }),
             ],
         }),

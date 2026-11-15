@@ -133,8 +133,8 @@ class DemoImages
         Storage::disk(self::DISK)->put($path, <<<SVG
         <svg xmlns="http://www.w3.org/2000/svg" width="320" height="96" viewBox="0 0 320 96">
           <rect x="8" y="16" width="64" height="64" rx="16" fill="{$color}"/>
-          <text x="40" y="58" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">{$initials}</text>
-          <text x="86" y="56" font-family="Poppins, Arial, sans-serif" font-size="19" font-weight="600" fill="#34364a">{$name}</text>
+          <text x="40" y="58" text-anchor="middle" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">{$initials}</text>
+          <text x="86" y="56" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="19" font-weight="600" fill="#34364a">{$name}</text>
         </svg>
         SVG);
 

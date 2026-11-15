@@ -25,7 +25,7 @@ Referensi: `PRD.md` (fitur), `ERD.md` (database), `DESIGN-SYSTEM.md` (UI).
 ### Fondasi design system
 
 - [x] Token warna baru (primary `#2547F9`, background `#F7F8FD`, card `#FFFFFF`)
-- [x] Font Poppins (Google Fonts)
+- [x] Font Plus Jakarta Sans (Google Fonts)
 - [x] Smooth scroll
 - [x] Hapus dark mode (CSS, blade, middleware, hook, halaman Appearance, class `dark:`)
 - [x] Tambah komponen shadcn: table, textarea, alert-dialog, field, empty, pagination, popover

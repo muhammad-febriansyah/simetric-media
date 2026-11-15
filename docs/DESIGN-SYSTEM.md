@@ -1,6 +1,6 @@
 # Design System
 
-Gaya visual mengacu ke buildwithangga.com: bersih, terang, card putih di atas latar abu kebiruan, tombol pill biru, dan font Poppins. Semua komponen memakai **shadcn/ui** (style `new-york`, base `radix`, ikon `lucide-react`).
+Gaya visual mengacu ke buildwithangga.com: bersih, terang, card putih di atas latar abu kebiruan, tombol pill biru, dan font Plus Jakarta Sans. Semua komponen memakai **shadcn/ui** (style `new-york`, base `radix`, ikon `lucide-react`).
 
 Aturan dasar:
 
@@ -34,7 +34,7 @@ Didefinisikan di `resources/css/app.css` (`:root`).
 
 ## 2. Tipografi
 
-Font: **Poppins** (Google Fonts), berat 400, 500, 600, 700. Dimuat lewat `google()` di `vite.config.ts`.
+Font: **Plus Jakarta Sans** (Google Fonts), berat 300, 400, 500, 600, 700, 800. Dimuat lewat `google()` di `vite.config.ts`.
 
 | Elemen             | Kelas Tailwind                               |
 | ------------------ | -------------------------------------------- |
@@ -249,11 +249,10 @@ Website publik memakai komponen dari **Aceternity UI**, **Magic UI**, dan **Reac
     - `dot-pattern` (latar hero, versi SVG `<pattern>`)
     - `marquee` (logo klien polos dengan `mix-blend-multiply` dan `grayscale`, testimoni dua baris berlawanan arah dengan review card)
     - `number-ticker` (angka statistik, tanpa kotak kartu)
-    - `word-rotate` (nama industri bergantian di badge hero)
     - `bento-grid` (Bidang Keahlian di beranda)
     - `animated-beam` (diagram integrasi sistem di beranda)
     - `card-hover-effect` (kartu industri di beranda)
-    - `animated-list` (hero: perjalanan proyek 7 tahap muncul satu per satu)
+    - Hero beranda: `HeroServiceLines`, daftar layanan utama (Web, Mobile, AI Automation) di jalur vertikal dengan sorotan yang berpindah otomatis
     - `timeline` (proses 7 tahap)
 - Pola tata letak mengikuti buildwithangga.com:
     - Heading section: eyebrow hijau (`text-success`), judul `text-2xl md:text-[2rem] font-bold` (`SectionHeading`, `onDark` untuk pita navy).

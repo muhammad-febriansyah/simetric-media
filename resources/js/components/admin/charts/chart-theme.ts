@@ -34,13 +34,14 @@ export function chartTokens(): ChartTokens {
 }
 
 /**
- * Shared ApexCharts options: Poppins, no toolbar, recessive grid and axes,
+ * Shared ApexCharts options: Plus Jakarta Sans, no toolbar, recessive grid and axes,
  * light tooltip. Individual charts extend these.
  */
 export function baseChartOptions(tokens: ChartTokens): ApexOptions {
     return {
         chart: {
-            fontFamily: 'Poppins, ui-sans-serif, system-ui, sans-serif',
+            fontFamily:
+                "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif",
             foreColor: tokens.muted,
             toolbar: { show: false },
             zoom: { enabled: false },
