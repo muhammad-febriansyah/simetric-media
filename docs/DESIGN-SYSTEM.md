@@ -244,7 +244,7 @@ Website publik memakai komponen dari **Aceternity UI**, **Magic UI**, dan **Reac
 - Dependency animasi hanya `motion`. Jangan menambah gsap, three, atau ogl.
 - Arah visual: **terang dan rapi**. Animasi hanya untuk hal yang memberi makna (logo dan testimoni bergerak, angka berjalan, alur integrasi, muncul saat di-scroll).
 - Komponen yang dipakai:
-    - `resizable-navbar` (header publik)
+    - `resizable-navbar` (header publik) dengan mega menu Keahlian dan Industri (Radix `navigation-menu`, data dari shared prop `siteNav`); di mobile menjadi submenu yang bisa dibuka-tutup
     - `blur-fade` (muncul saat di-scroll)
     - `dot-pattern` (latar hero, versi SVG `<pattern>`)
     - `marquee` (logo klien polos dengan `mix-blend-multiply` dan `grayscale`, testimoni dua baris berlawanan arah dengan review card)
@@ -260,7 +260,7 @@ Website publik memakai komponen dari **Aceternity UI**, **Magic UI**, dan **Reac
     - Kartu publik memakai class `site-card` (putih, rounded-2xl/16px, tanpa border dan tanpa bayangan, sama dengan BWA) dan `site-card-interactive` (garis biru 2px saat hover) untuk kartu yang bisa diklik. Kartu konten (studi kasus, produk, insight) memakai padding 30px (`md:p-7.5`) dengan gambar di dalam padding (`rounded-2xl`) dan judul `text-xl font-bold`.
     - Warna navy (`bg-navy`) hanya untuk banner CTA dan pita testimoni.
     - FAQ memakai `FaqList` (dua kolom, collapsible). FAQ beranda diisi dari menu FAQ dengan penempatan "Beranda".
-    - Tombol WhatsApp melayang (`WhatsappButton`) memakai nomor dari Pengaturan Website.
+    - Kanan bawah: `ContactWidget` (tombol chat yang membuka pilihan WhatsApp, email, dan form konsultasi, memakai kontak dari Pengaturan Website) dan tombol kembali ke atas yang muncul setelah halaman di-scroll.
     - Halaman daftar: filter pakai `FilterPills`, pagination pakai `SitePagination`, empty state pakai `SiteEmpty`.
     - Halaman detail: blok konten pakai `DetailSection` (eyebrow + judul), kartu ringkasan di kanan `lg:sticky lg:top-28`, tombol mulai pakai `ConsultActions` (form konsultasi + WhatsApp).
 - Jangan dipakai karena terkesan berlebihan: spotlight/beams/sparkles/lamp/aurora/meteors, latar WebGL, tombol shimmer atau rainbow, border menyala, teks bergradasi, dan section gelap.

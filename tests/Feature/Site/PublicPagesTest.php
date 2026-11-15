@@ -265,3 +265,31 @@ test('shows only the active FAQs of a service or industry on its detail page', f
     'service' => [Service::class, 'services.show', 'site/services/show'],
     'industry' => [Industry::class, 'industries.show', 'site/industries/show'],
 ]);
+
+test('shares only published expertise, services and industries for the navbar mega menu', function () {
+    $expertise = Expertise::factory()->create();
+    $service = Service::factory()->for($expertise)->create();
+    Service::factory()->draft()->for($expertise)->create();
+    $emptyExpertise = Expertise::factory()->create();
+    Service::factory()->draft()->for($emptyExpertise)->create();
+    $draftExpertise = Expertise::factory()->draft()->create();
+    Service::factory()->for($draftExpertise)->create();
+    $industry = Industry::factory()->create();
+    $draftIndustry = Industry::factory()->draft()->create();
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('siteNav.expertises', function ($expertises) use ($expertise, $service, $emptyExpertise, $draftExpertise) {
+                $expertises = collect($expertises);
+                $shown = $expertises->firstWhere('id', $expertise->id);
+
+                return $shown !== null
+                    && collect($shown['services'])->pluck('id')->all() === [$service->id]
+                    && ! $expertises->contains('id', $emptyExpertise->id)
+                    && ! $expertises->contains('id', $draftExpertise->id);
+            })
+            ->where('siteNav.industries', fn ($industries) => collect($industries)->contains('id', $industry->id)
+                && ! collect($industries)->contains('id', $draftIndustry->id))
+        );
+});

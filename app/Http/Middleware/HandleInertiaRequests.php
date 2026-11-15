@@ -4,9 +4,14 @@ namespace App\Http\Middleware;
 
 use App\Enums\LeadStatus;
 use App\Models\ConsultationRequest;
+use App\Models\Expertise;
+use App\Models\Industry;
+use App\Models\Service;
 use App\Models\SiteSetting;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -49,7 +54,58 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'admin' => fn (): ?array => $this->adminData($request),
+            // Mega menu content for the public navbar. Remembered by the client
+            // between visits and refreshed every 10 minutes.
+            'siteNav' => Inertia::once(fn (): array => $this->siteNavData())->until(now()->addMinutes(10)),
         ];
+    }
+
+    /**
+     * Published expertise areas with their services, and published industries,
+     * for the public navbar's mega menu.
+     *
+     * @return array{expertises: list<array<string, mixed>>, industries: list<array<string, mixed>>}
+     */
+    protected function siteNavData(): array
+    {
+        $expertises = Expertise::query()
+            ->published()
+            ->whereHas('services', fn ($query) => $query->published())
+            ->with(['services' => fn (HasMany $query) => $query->published()->ordered()])
+            ->ordered()
+            ->get()
+            ->map(fn (Expertise $expertise): array => [
+                'id' => $expertise->id,
+                'name' => $expertise->name,
+                'slug' => $expertise->slug,
+                'icon' => $expertise->icon,
+                'description' => $expertise->description,
+                'services' => $expertise->services->map(fn (Service $service): array => [
+                    'id' => $service->id,
+                    'name' => $service->name,
+                    'slug' => $service->slug,
+                    'icon' => $service->icon,
+                    'headline' => $service->headline,
+                ])->values()->all(),
+            ])
+            ->values()
+            ->all();
+
+        $industries = Industry::query()
+            ->published()
+            ->ordered()
+            ->get()
+            ->map(fn (Industry $industry): array => [
+                'id' => $industry->id,
+                'name' => $industry->name,
+                'slug' => $industry->slug,
+                'icon' => $industry->icon,
+                'summary' => $industry->summary,
+            ])
+            ->values()
+            ->all();
+
+        return ['expertises' => $expertises, 'industries' => $industries];
     }
 
     /**

@@ -8,8 +8,16 @@ import {
     useMotionValueEvent,
     useScroll,
 } from 'motion/react';
-import type { ReactElement, ReactNode } from 'react';
+import type { MouseEvent, ReactElement, ReactNode } from 'react';
 import { Children, cloneElement, isValidElement, useState } from 'react';
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 
 /**
@@ -67,11 +75,11 @@ export function NavBody({
     return (
         <motion.div
             animate={{
-                width: visible ? '62%' : '100%',
+                width: visible ? '70%' : '100%',
                 y: visible ? 12 : 0,
             }}
             transition={SPRING}
-            style={{ minWidth: 960 }}
+            style={{ minWidth: 1080 }}
             className={cn(
                 'relative mx-auto hidden w-full max-w-7xl items-center justify-between gap-4 rounded-full px-4 py-2 transition-colors duration-300 xl:flex',
                 visible
@@ -90,8 +98,29 @@ export type NavItem = {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon;
     isActive?: boolean;
+    /** Mega menu panel; when set, the item opens this panel instead of linking. */
+    menu?: ReactNode;
 };
 
+/**
+ * A mouse click on a trigger whose menu is already open (opened by hovering)
+ * would toggle it shut; keep it open instead. Keyboard activation (detail 0)
+ * still toggles normally.
+ */
+function keepHoverOpenMenu(event: MouseEvent<HTMLButtonElement>) {
+    if (event.detail > 0 && event.currentTarget.dataset.state === 'open') {
+        event.preventDefault();
+    }
+}
+
+const NAV_ITEM_CLASS =
+    'relative h-auto rounded-full bg-transparent px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active=true]:bg-transparent';
+
+/**
+ * Desktop navigation (Radix navigation menu): plain links plus mega menu
+ * triggers that open their panel on hover, click or keyboard. A pill slides
+ * behind the hovered item.
+ */
 export function NavItems({
     items,
     className,
@@ -101,41 +130,73 @@ export function NavItems({
 }) {
     const [hovered, setHovered] = useState<number | null>(null);
 
+    const pill = (index: number, isActive?: boolean) =>
+        (hovered === index || (hovered === null && isActive)) && (
+            <motion.span
+                layoutId="navbar-pill"
+                transition={SPRING}
+                className="absolute inset-0 rounded-full bg-accent"
+            />
+        );
+
     return (
-        <nav
+        <NavigationMenu
             aria-label="Menu utama"
             onMouseLeave={() => setHovered(null)}
-            className={cn(
-                'flex flex-1 items-center justify-center gap-1 text-sm font-medium',
-                className,
-            )}
+            viewportClassName="mt-3 rounded-2xl border-0 shadow-[0_20px_50px_-12px_rgba(52,54,74,0.25)]"
+            className={cn('max-w-none flex-1', className)}
         >
-            {items.map((item, index) => (
-                <Link
-                    key={item.title}
-                    href={item.href}
-                    prefetch
-                    onMouseEnter={() => setHovered(index)}
-                    aria-current={item.isActive ? 'page' : undefined}
-                    className={cn(
-                        'relative rounded-full px-3.5 py-2 whitespace-nowrap transition-colors',
-                        item.isActive
-                            ? 'text-primary'
-                            : 'text-muted-foreground hover:text-foreground',
-                    )}
-                >
-                    {(hovered === index ||
-                        (hovered === null && item.isActive)) && (
-                        <motion.span
-                            layoutId="navbar-pill"
-                            transition={SPRING}
-                            className="absolute inset-0 rounded-full bg-accent"
-                        />
-                    )}
-                    <span className="relative z-10">{item.title}</span>
-                </Link>
-            ))}
-        </nav>
+            <NavigationMenuList className="gap-1">
+                {items.map((item, index) => {
+                    const colorClass = item.isActive
+                        ? 'text-primary hover:text-primary focus:text-primary'
+                        : 'text-muted-foreground hover:text-foreground focus:text-foreground data-[state=open]:text-foreground';
+
+                    return (
+                        <NavigationMenuItem
+                            key={item.title}
+                            onMouseEnter={() => setHovered(index)}
+                        >
+                            {item.menu ? (
+                                <>
+                                    <NavigationMenuTrigger
+                                        onClick={keepHoverOpenMenu}
+                                        className={cn(NAV_ITEM_CLASS, colorClass)}
+                                    >
+                                        {pill(index, item.isActive)}
+                                        <span className="relative z-10">
+                                            {item.title}
+                                        </span>
+                                    </NavigationMenuTrigger>
+                                    <NavigationMenuContent className="p-0">
+                                        {item.menu}
+                                    </NavigationMenuContent>
+                                </>
+                            ) : (
+                                <NavigationMenuLink
+                                    asChild
+                                    active={item.isActive}
+                                    className={cn(NAV_ITEM_CLASS, colorClass)}
+                                >
+                                    <Link
+                                        href={item.href}
+                                        prefetch
+                                        aria-current={
+                                            item.isActive ? 'page' : undefined
+                                        }
+                                    >
+                                        {pill(index, item.isActive)}
+                                        <span className="relative z-10">
+                                            {item.title}
+                                        </span>
+                                    </Link>
+                                </NavigationMenuLink>
+                            )}
+                        </NavigationMenuItem>
+                    );
+                })}
+            </NavigationMenuList>
+        </NavigationMenu>
     );
 }
 

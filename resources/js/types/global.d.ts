@@ -1,5 +1,6 @@
 import type { Auth } from '@/types/auth';
 import type { AdminSharedData } from '@/types/admin';
+import type { SiteNav } from '@/types/site-nav';
 
 declare module 'react' {
     interface InputHTMLAttributes<T> {
@@ -14,6 +15,7 @@ declare module '@inertiajs/core' {
             auth: Auth;
             sidebarOpen: boolean;
             admin: AdminSharedData | null;
+            siteNav?: SiteNav;
             site: {
                 site_logo_url: string | null;
                 site_favicon_url: string | null;

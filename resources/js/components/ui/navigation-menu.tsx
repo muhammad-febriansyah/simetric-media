@@ -9,9 +9,12 @@ function NavigationMenu({
   className,
   children,
   viewport = true,
+  viewportClassName,
   ...props
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
   viewport?: boolean
+  /** Extra classes for the floating panel that holds the open menu content. */
+  viewportClassName?: string
 }) {
   return (
     <NavigationMenuPrimitive.Root
@@ -24,7 +27,7 @@ function NavigationMenu({
       {...props}
     >
       {children}
-      {viewport && <NavigationMenuViewport />}
+      {viewport && <NavigationMenuViewport className={viewportClassName} />}
     </NavigationMenuPrimitive.Root>
   )
 }

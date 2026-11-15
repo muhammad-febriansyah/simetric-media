@@ -4,7 +4,7 @@ import { CtaSection } from '@/components/site/cta-section';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
 import { SitePageHeader } from '@/components/site/site-page-header';
-import { WhatsappButton } from '@/components/site/whatsapp-button';
+import { ContactWidget } from '@/components/site/contact-widget';
 import type { BreadcrumbItem } from '@/types';
 
 type SiteLayoutProps = {
@@ -58,7 +58,7 @@ export default function SiteLayout({
                 </main>
                 {showCta && <CtaSection />}
                 <SiteFooter />
-                <WhatsappButton />
+                <ContactWidget />
             </div>
         </MotionConfig>
     );
