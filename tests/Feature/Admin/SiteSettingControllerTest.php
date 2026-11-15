@@ -74,6 +74,16 @@ test('uploads a logo and favicon and shares their URLs', function () {
         );
 });
 
+test('accepts a favicon up to 1 MB and rejects a larger one', function () {
+    $this->put(route('admin.site-settings.update'), validSiteSettings([
+        'site_favicon' => UploadedFile::fake()->create('favicon.png', 1024, 'image/png'),
+    ]))->assertSessionHasNoErrors();
+
+    $this->put(route('admin.site-settings.update'), validSiteSettings([
+        'site_favicon' => UploadedFile::fake()->create('favicon.png', 1025, 'image/png'),
+    ]))->assertSessionHasErrors(['site_favicon' => 'Ukuran Favicon maksimal 1 MB.']);
+});
+
 test('keeps the logo when no new file is uploaded and removes it on request', function () {
     $this->put(route('admin.site-settings.update'), validSiteSettings([
         'site_logo' => UploadedFile::fake()->image('logo.png'),

@@ -42,7 +42,7 @@ class SiteSettingRequest extends FormRequest
             'footer_text' => ['nullable', 'string', 'max:200'],
             'site_logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp,svg', 'max:1024'],
             'remove_site_logo' => ['nullable', 'boolean'],
-            'site_favicon' => ['nullable', 'file', 'mimes:png,ico,svg', 'max:512'],
+            'site_favicon' => ['nullable', 'file', 'mimes:png,ico,svg', 'max:1024'],
             'remove_site_favicon' => ['nullable', 'boolean'],
 
             'contact_email' => ['required', 'email', 'max:150'],
@@ -78,6 +78,8 @@ class SiteSettingRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'site_logo.max' => 'Ukuran Logo maksimal 1 MB.',
+            'site_favicon.max' => 'Ukuran Favicon maksimal 1 MB.',
             'contact_whatsapp.regex' => 'Nomor WhatsApp diawali 62 tanpa spasi, contoh 6281234567890.',
             'maps_embed_url.starts_with' => 'Gunakan link embed dari Google Maps (Bagikan → Sematkan peta).',
             'google_analytics_id.regex' => 'Format ID Google Analytics: G-XXXXXXXXXX.',

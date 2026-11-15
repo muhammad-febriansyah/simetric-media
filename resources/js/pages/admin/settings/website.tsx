@@ -294,7 +294,7 @@ export default function WebsiteSettings({
                                                 <ImageUploadField
                                                     name="site_favicon"
                                                     label="Favicon"
-                                                    description="Ikon kecil di tab browser. PNG, ICO, atau SVG 512×512, maksimal 512 KB."
+                                                    description="Ikon kecil di tab browser. PNG, ICO, atau SVG 512×512, maksimal 1 MB."
                                                     accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml"
                                                     currentUrl={
                                                         settings.site_favicon_url
