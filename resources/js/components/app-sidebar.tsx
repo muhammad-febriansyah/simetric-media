@@ -20,7 +20,7 @@ import { toUrl } from '@/lib/utils';
 import { dashboard, home } from '@/routes';
 
 export function AppSidebar() {
-    const { name, admin } = usePage().props;
+    const { name, site, admin } = usePage().props;
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const newLeadsCount = admin?.newLeadsCount ?? 0;
 
@@ -32,18 +32,37 @@ export function AppSidebar() {
                         <SidebarMenuButton
                             size="lg"
                             asChild
-                            className="hover:bg-transparent"
+                            tooltip={{ children: name }}
+                            className="px-1 py-0.5 group-data-[collapsible=icon]:justify-center hover:bg-transparent"
                         >
-                            <Link href={dashboard()} prefetch>
-                                <BrandMark />
-                                <span className="flex flex-col leading-tight">
-                                    <span className="truncate font-semibold">
-                                        {name}
-                                    </span>
-                                    <span className="text-xs text-muted-foreground">
-                                        Panel Admin
-                                    </span>
-                                </span>
+                            <Link href={dashboard()} prefetch aria-label={name}>
+                                {site.site_logo_url ? (
+                                    <>
+                                        <img
+                                            src={site.site_logo_url}
+                                            alt={name}
+                                            className="h-11 w-auto max-w-[13rem] object-contain object-left group-data-[collapsible=icon]:hidden"
+                                        />
+                                        <span className="hidden group-data-[collapsible=icon]:flex">
+                                            {site.site_favicon_url ? (
+                                                <img
+                                                    src={site.site_favicon_url}
+                                                    alt=""
+                                                    className="size-8 object-contain"
+                                                />
+                                            ) : (
+                                                <BrandMark className="size-8" />
+                                            )}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <BrandMark />
+                                        <span className="truncate font-semibold">
+                                            {name}
+                                        </span>
+                                    </>
+                                )}
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
