@@ -54,8 +54,12 @@ function PanelFooter({
     );
 }
 
+/** Shared panel width: wide enough for four columns, never wider than the screen. */
+const PANEL_WIDTH = 'w-[min(60rem,calc(100vw-4rem))]';
+
 /**
- * Keahlian mega menu: every published expertise area with its services.
+ * Keahlian mega menu: one column per published expertise area, with its
+ * services listed underneath.
  */
 export function ExpertiseMegaMenu({
     expertises,
@@ -63,36 +67,36 @@ export function ExpertiseMegaMenu({
     expertises: SiteNavExpertise[];
 }) {
     return (
-        <div className="w-[46rem]">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-5 p-6">
+        <div className={PANEL_WIDTH}>
+            <div className="grid grid-cols-4 gap-4 p-5">
                 {expertises.map((expertise) => (
                     <div key={expertise.id} className="flex flex-col gap-2">
                         <MenuLink
                             href={`${expertisesIndex.url()}#${expertise.slug}`}
-                            className="flex-row items-center gap-3 rounded-xl p-2 hover:bg-accent"
+                            className="flex-row items-center gap-2.5 rounded-xl p-2 hover:bg-accent"
                         >
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
                                 <ContentIcon
                                     iconName={expertise.icon}
-                                    className="size-5 text-accent-foreground"
+                                    className="size-[18px] text-accent-foreground"
                                 />
                             </span>
-                            <span className="text-base font-bold text-foreground">
+                            <span className="text-sm font-bold text-foreground">
                                 {expertise.name}
                             </span>
                         </MenuLink>
-                        <ul className="flex flex-col gap-0.5 pl-[3.25rem]">
+                        <ul className="ml-[1.6rem] flex flex-col gap-0.5 border-l-2 border-accent pl-2">
                             {expertise.services.map((service) => (
                                 <li key={service.id}>
                                     <MenuLink
                                         href={showService(service.slug)}
                                         className="gap-0.5 rounded-lg px-2 py-1.5 hover:bg-muted"
                                     >
-                                        <span className="font-medium text-foreground">
+                                        <span className="text-sm font-medium text-foreground">
                                             {service.name}
                                         </span>
                                         {service.headline && (
-                                            <span className="line-clamp-1 text-xs text-muted-foreground">
+                                            <span className="line-clamp-2 text-xs text-muted-foreground">
                                                 {service.headline}
                                             </span>
                                         )}
@@ -113,7 +117,8 @@ export function ExpertiseMegaMenu({
 }
 
 /**
- * Industri mega menu: every published industry with its short summary.
+ * Industri mega menu: a compact four-column grid of published industries,
+ * so even a long list fits without scrolling.
  */
 export function IndustryMegaMenu({
     industries,
@@ -121,29 +126,22 @@ export function IndustryMegaMenu({
     industries: SiteNavIndustry[];
 }) {
     return (
-        <div className="w-[40rem]">
-            <ul className="grid grid-cols-2 gap-2 p-6">
+        <div className={PANEL_WIDTH}>
+            <ul className="grid grid-cols-4 gap-1 p-4">
                 {industries.map((industry) => (
                     <li key={industry.id}>
                         <MenuLink
                             href={showIndustry(industry.slug)}
-                            className="flex-row items-start gap-3 rounded-xl p-3 hover:bg-accent"
+                            className="h-full flex-row items-center gap-2.5 rounded-xl p-2.5 hover:bg-accent"
                         >
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
                                 <ContentIcon
                                     iconName={industry.icon}
-                                    className="size-5 text-accent-foreground"
+                                    className="size-[18px] text-accent-foreground"
                                 />
                             </span>
-                            <span className="flex min-w-0 flex-col gap-0.5">
-                                <span className="font-bold text-foreground">
-                                    {industry.name}
-                                </span>
-                                {industry.summary && (
-                                    <span className="line-clamp-2 text-xs text-muted-foreground">
-                                        {industry.summary}
-                                    </span>
-                                )}
+                            <span className="text-sm leading-snug font-semibold text-foreground">
+                                {industry.name}
                             </span>
                         </MenuLink>
                     </li>
