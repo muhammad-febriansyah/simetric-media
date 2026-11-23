@@ -2,6 +2,7 @@
 
 use App\Models\Article;
 use App\Models\Service;
+use App\Support\RichText;
 use Illuminate\Support\Facades\DB;
 
 test('converts plain text written to a rich text column into escaped paragraphs', function () {
@@ -27,4 +28,19 @@ test('the conversion migration wraps existing plain text content in paragraphs',
 
     expect(DB::table('articles')->where('id', $article->id)->value('body'))->toBe('<p>Teks lama</p><p>Paragraf &lt;dua&gt;</p>')
         ->and($html->refresh()->body)->toBe('<p>Sudah HTML</p>');
+});
+
+test('keeps tables with merged cells and strips unsafe table attributes', function () {
+    $html = RichText::sanitize(
+        '<table class="MsoTableGrid" style="width:100%" onclick="alert(1)"><tbody><tr><th colspan="2" style="color:red">Paket</th></tr>'
+        .'<tr><td rowspan="2" onmouseover="alert(1)"><p>Basic</p></td><td><p>Rp 1 juta</p></td></tr></tbody></table><script>alert(1)</script>'
+    );
+
+    expect($html)->toBe('<table><tbody><tr><th colspan="2">Paket</th></tr><tr><td rowspan="2"><p>Basic</p></td><td><p>Rp 1 juta</p></td></tr></tbody></table>');
+});
+
+test('keeps content that starts with a table as HTML', function () {
+    $table = '<table><tbody><tr><td><p>Isi</p></td></tr></tbody></table>';
+
+    expect(Article::factory()->create(['body' => $table])->body)->toBe($table);
 });

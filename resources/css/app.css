@@ -209,6 +209,33 @@
         @apply my-6 border-border;
     }
 
+    /* Wide tables scroll inside the content instead of widening the page. */
+    .rich-text table {
+        @apply block w-full max-w-full overflow-x-auto text-sm;
+    }
+
+    .rich-text tbody {
+        @apply table w-full border-collapse;
+    }
+
+    .rich-text th,
+    .rich-text td {
+        @apply min-w-28 border border-border px-3 py-2 text-left align-top;
+    }
+
+    .rich-text th {
+        @apply bg-muted font-semibold text-foreground;
+    }
+
+    .rich-text th > * + *,
+    .rich-text td > * + * {
+        @apply mt-2;
+    }
+
+    .rich-text .selectedCell {
+        @apply bg-accent;
+    }
+
     .rich-text > :first-child {
         @apply mt-0;
     }

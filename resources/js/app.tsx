@@ -1,4 +1,5 @@
 import { createInertiaApp, router } from '@inertiajs/react';
+import { GlobalLoader } from '@/components/global-loader';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
@@ -39,12 +40,11 @@ void createInertiaApp({
             <TooltipProvider delayDuration={0}>
                 {app}
                 <Toaster />
+                <GlobalLoader />
             </TooltipProvider>
         );
     },
-    progress: {
-        color: '#2547F9',
-    },
+    progress: false,
 });
 
 // Keep the tab icon in step with the favicon from the website settings.

@@ -52,7 +52,7 @@ class RichText
 
     public static function isHtml(string $value): bool
     {
-        return (bool) preg_match('/^\s*<(p|h[1-6]|ul|ol|blockquote)[\s>]/i', $value);
+        return (bool) preg_match('/^\s*<(p|h[1-6]|ul|ol|blockquote|table)[\s>]/i', $value);
     }
 
     private static function isEmpty(string $html): bool
@@ -80,6 +80,13 @@ class RichText
                 ->allowElement('blockquote')
                 ->allowElement('code')
                 ->allowElement('hr')
+                ->allowElement('table')
+                ->allowElement('thead')
+                ->allowElement('tbody')
+                ->allowElement('tfoot')
+                ->allowElement('tr')
+                ->allowElement('th', ['colspan', 'rowspan', 'scope'])
+                ->allowElement('td', ['colspan', 'rowspan'])
                 ->allowElement('a', ['href', 'target'])
                 ->allowLinkSchemes(['http', 'https', 'mailto', 'tel'])
                 ->allowRelativeLinks()

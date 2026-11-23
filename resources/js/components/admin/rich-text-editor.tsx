@@ -1,6 +1,7 @@
 'use no memo';
 
 import { Placeholder } from '@tiptap/extensions';
+import { deleteTable } from '@tiptap/pm/tables';
 import type { Editor } from '@tiptap/react';
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -16,11 +17,13 @@ import {
     QuoteIcon,
     Redo2Icon,
     RemoveFormattingIcon,
+    Table2Icon,
     UnderlineIcon,
     Undo2Icon,
     UnlinkIcon,
 } from 'lucide-react';
 import { useState } from 'react';
+import { richTextTableExtensions } from '@/components/admin/rich-text-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -271,6 +274,7 @@ function Toolbar({ editor, compact }: { editor: Editor; compact: boolean }) {
         selector: ({ editor: current }) => ({
             canUndo: current.can().undo(),
             canRedo: current.can().redo(),
+            isInTable: current.isActive('table'),
         }),
     });
     const visible = (action: ToolbarAction) => !compact || action.compact;
@@ -305,6 +309,16 @@ function Toolbar({ editor, compact }: { editor: Editor; compact: boolean }) {
                     editor.chain().focus().unsetAllMarks().clearNodes().run()
                 }
             />
+            {history.isInTable && (
+                <ToolbarButton
+                    label="Hapus tabel"
+                    icon={Table2Icon}
+                    onClick={() => {
+                        deleteTable(editor.state, editor.view.dispatch);
+                        editor.commands.focus();
+                    }}
+                />
+            )}
             <div className="ml-auto flex items-center gap-1">
                 <ToolbarButton
                     label="Urungkan"
@@ -350,6 +364,7 @@ export function RichTextEditor({
                     defaultProtocol: 'https',
                 },
             }),
+            ...richTextTableExtensions,
             Placeholder.configure({ placeholder }),
         ],
         content: defaultValue ?? '',
