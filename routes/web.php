@@ -29,8 +29,10 @@ Route::get('industri/{industry:slug}', [IndustryController::class, 'show'])->nam
 Route::get('studi-kasus', [CaseStudyController::class, 'index'])->name('case-studies.index');
 Route::get('studi-kasus/{caseStudy:slug}', [CaseStudyController::class, 'show'])->name('case-studies.show');
 
-Route::get('produk', [ProductController::class, 'index'])->name('products.index');
-Route::get('produk/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+Route::get('portfolio', [ProductController::class, 'index'])->name('products.index');
+Route::get('portfolio/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+Route::permanentRedirect('produk', 'portfolio');
+Route::get('produk/{slug}', fn (string $slug) => redirect()->route('products.show', $slug, 301))->where('slug', '[A-Za-z0-9\-]+');
 
 Route::get('konsultasi', [ConsultationController::class, 'create'])->name('consultation.create');
 Route::post('konsultasi', [ConsultationController::class, 'store'])

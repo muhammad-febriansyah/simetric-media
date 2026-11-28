@@ -216,7 +216,7 @@ export default function Home({
                         <BlurFade delay={0.05}>
                             <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm font-semibold text-primary md:text-base">
                                 <span className="size-2 shrink-0 rounded-full bg-success" />
-                                Konsultan teknologi A–Z untuk industri
+                                Across-industrial digital consultant
                             </span>
                         </BlurFade>
                         <BlurFade delay={0.15}>
@@ -521,13 +521,13 @@ export default function Home({
             {products.length > 0 && (
                 <section className={SECTION}>
                     <SectionHeading
-                        eyebrow="Produk kami"
+                        eyebrow="Portfolio"
                         title="Kami juga membangun dan menjalankan produk sendiri"
                         description="Pengalaman mengelola platform kami sendiri, dari ide sampai dipakai banyak pengguna, kami bawa ke setiap proyek klien."
                         action={
                             <Button variant="secondary" asChild>
                                 <Link href={productsIndex()}>
-                                    Semua produk
+                                    Semua portfolio
                                     <ArrowRightIcon data-icon="inline-end" />
                                 </Link>
                             </Button>

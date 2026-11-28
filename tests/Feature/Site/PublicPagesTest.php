@@ -293,3 +293,14 @@ test('shares only published expertise, services and industries for the navbar me
                 && ! collect($industries)->contains('id', $draftIndustry->id))
         );
 });
+
+test('serves products under /portfolio and redirects the former /produk URLs permanently', function () {
+    $product = Product::factory()->create();
+
+    expect(route('products.index', absolute: false))->toBe('/portfolio')
+        ->and(route('products.show', $product->slug, false))->toBe("/portfolio/{$product->slug}");
+
+    $this->get('/produk')->assertStatus(301)->assertRedirect('/portfolio');
+    $this->get("/produk/{$product->slug}")->assertStatus(301)->assertRedirect(route('products.show', $product->slug));
+    $this->get("/portfolio/{$product->slug}")->assertOk();
+});

@@ -41,11 +41,11 @@ export default function ProductShow({
     const pageHeader = {
         breadcrumbs: [
             { title: 'Beranda', href: home() },
-            { title: 'Produk', href: index() },
+            { title: 'Portfolio', href: index() },
             { title: product.name, href: show(product.slug) },
         ],
         title: product.name,
-        description: product.tagline ?? product.category ?? 'Produk kami',
+        description: product.tagline ?? product.category ?? 'Portfolio kami',
     };
 
     return (
@@ -61,7 +61,7 @@ export default function ProductShow({
 
             <SitePageHeader
                 {...pageHeader}
-                eyebrow={product.category ?? 'Produk kami'}
+                eyebrow={product.category ?? 'Portfolio kami'}
             >
                 <div className="flex flex-wrap gap-3">
                     {product.website_url && (
@@ -251,7 +251,7 @@ export default function ProductShow({
             )}
 
             {otherProducts.length > 0 && (
-                <DetailSection eyebrow="Produk kami" title="Produk lainnya">
+                <DetailSection eyebrow="Portfolio" title="Portfolio lainnya">
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {otherProducts.map((otherProduct) => (
                             <ProductCard

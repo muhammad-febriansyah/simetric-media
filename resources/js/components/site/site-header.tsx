@@ -54,7 +54,7 @@ export const siteNavItems = [
     { title: 'Keahlian', href: expertisesIndex(), icon: BriefcaseBusinessIcon },
     { title: 'Industri', href: industriesIndex(), icon: Building2Icon },
     { title: 'Studi Kasus', href: caseStudiesIndex(), icon: FolderKanbanIcon },
-    { title: 'Produk', href: productsIndex(), icon: BoxIcon },
+    { title: 'Portfolio', href: productsIndex(), icon: BoxIcon },
     { title: 'Insight', href: insightsIndex(), icon: NewspaperIcon },
 ];
 

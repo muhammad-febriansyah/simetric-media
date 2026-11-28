@@ -72,7 +72,7 @@ export function ProductCard({ product }: { product: Product }) {
                     )}
                 </div>
                 <span className="flex items-center gap-1.5 font-semibold text-primary">
-                    Lihat produk
+                    Lihat portfolio
                     <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
                 </span>
             </div>

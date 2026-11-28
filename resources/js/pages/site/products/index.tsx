@@ -8,11 +8,11 @@ import type { Product } from '@/types';
 export default function ProductIndex({ products }: { products: Product[] }) {
     return (
         <>
-            <Head title="Produk" />
+            <Head title="Portfolio" />
 
             {products.length === 0 ? (
                 <SiteEmpty
-                    title="Produk segera hadir"
+                    title="Portfolio segera hadir"
                     description="Hubungi kami untuk mengetahui produk digital yang sedang kami kembangkan."
                 />
             ) : (
@@ -29,10 +29,10 @@ export default function ProductIndex({ products }: { products: Product[] }) {
 ProductIndex.layout = {
     breadcrumbs: [
         { title: 'Beranda', href: home() },
-        { title: 'Produk', href: index() },
+        { title: 'Portfolio', href: index() },
     ],
-    eyebrow: 'Produk digital',
-    title: 'Produk Kami',
+    eyebrow: 'Portfolio',
+    title: 'Portfolio Kami',
     description:
         'Platform digital yang kami bangun dan jalankan sendiri, bukti bahwa kami mengawal ide sampai menjadi aplikasi yang dipakai banyak orang.',
 };
